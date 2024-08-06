@@ -64,7 +64,7 @@ importers:
         specifier: ^29.5.0
         version: 29.7.0(@types/node@20.14.14)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4))
       prettier:
-        specifier: ^3.0.0
+        specifier: ^3.3.3
         version: 3.3.3
       source-map-support:
         specifier: ^0.5.21
