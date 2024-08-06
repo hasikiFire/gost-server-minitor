@@ -1,12 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './docker.service';
+import { Controller } from '@nestjs/common';
+import { DockerService } from './docker.service';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+export class DockerController {
+  constructor(private readonly appService: DockerService) {}
 }
