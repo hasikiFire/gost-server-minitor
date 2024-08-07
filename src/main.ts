@@ -6,7 +6,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   await app.listen(9000);
 
-  const dockerCommand = new DockerCommand();
-  dockerCommand.startDockerCompose();
+  if (process.env.NODE_ENV !== 'development') {
+    const dockerCommand = new DockerCommand();
+    dockerCommand.startDockerCompose();
+  }
 }
 bootstrap();
