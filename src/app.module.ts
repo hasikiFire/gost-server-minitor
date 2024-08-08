@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsageRecordModule } from './module/usageRecord/usagerecord.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -13,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
+      type: 'mysql',
       host: process.env.TYPEORM_HOST,
       port: +process.env.TYPEORM_PORT,
       username: process.env.TYPEORM_USERNAME,
@@ -21,6 +23,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    UsageRecordModule,
   ],
   controllers: [AppController],
   providers: [AppService],
