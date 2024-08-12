@@ -1,11 +1,16 @@
+import { ObseverModule } from './module/obsever/obsever.module';
+import { ObseverController } from './module/obsever/obsever.controller';
+import { ObseverService } from './module/obsever/obsever.service';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsageRecordModule } from './module/usageRecord/usagerecord.module';
+import { GostService } from './module/gost/gost.service';
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
+    HttpModule,
+    ObseverModule,
     ConfigModule.forRoot({
       envFilePath: [
         `.env.${process.env.NODE_ENV}`, // 根据 NODE_ENV 环境变量加载相应的 .env 文件
@@ -25,7 +30,7 @@ import { UsageRecordModule } from './module/usageRecord/usagerecord.module';
     }),
     UsageRecordModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [ObseverController],
+  providers: [ObseverService, GostService],
 })
 export class AppModule {}
