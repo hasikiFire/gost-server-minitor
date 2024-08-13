@@ -1,16 +1,23 @@
+import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/obsever/obsever.module';
-import { ObseverController } from './module/obsever/obsever.controller';
-import { ObseverService } from './module/obsever/obsever.service';
+// import { ObseverController } from './module/obsever/obsever.controller';
+// import { ObseverService } from './module/obsever/obsever.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsageRecordModule } from './module/usageRecord/usagerecord.module';
-import { GostService } from './module/gost/gost.service';
+// import { GostService } from './module/gost/gost.service';
 import { HttpModule } from '@nestjs/axios';
+// import { UsageRecordService } from './module/usageRecord/usagerecord.service';
+// import { GostController } from './module/gost/gost.controller';
+// import { UsageRecordController } from './module/usageRecord/usagerecord.controller';
+import { GostModule } from './module/gost/gost.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ReqeustInterceptor } from './common/requestInterceptor';
+
 @Module({
   imports: [
-    HttpModule,
-    ObseverModule,
+    RequestModule,
     ConfigModule.forRoot({
       envFilePath: [
         `.env.${process.env.NODE_ENV}`, // 根据 NODE_ENV 环境变量加载相应的 .env 文件
@@ -28,9 +35,18 @@ import { HttpModule } from '@nestjs/axios';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    HttpModule,
+    ObseverModule,
     UsageRecordModule,
+    GostModule,
+    RequestModule,
   ],
-  controllers: [ObseverController],
-  providers: [ObseverService, GostService],
+  // controllers: [UsageRecordController, GostController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ReqeustInterceptor,
+    },
+  ],
 })
 export class AppModule {}

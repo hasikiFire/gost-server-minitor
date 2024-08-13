@@ -13,7 +13,7 @@ import { In, Repository } from 'typeorm';
 export class UsageRecordService {
   constructor(
     @InjectRepository(UsageRecord)
-    private readonly UsageRecordRepository: Repository<UsageRecord>,
+    private readonly usageRecordRepository: Repository<UsageRecord>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(PackageItem)
@@ -21,7 +21,7 @@ export class UsageRecordService {
   ) {}
 
   async findValidUsers(): Promise<User[]> {
-    const record = await this.UsageRecordRepository.find({
+    const record = await this.usageRecordRepository.find({
       where: { purchaseStatus: In([0, 1]) },
     });
     if (record.length) {

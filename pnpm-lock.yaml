@@ -29,6 +29,9 @@ importers:
       '@nestjs/typeorm':
         specifier: ^10.0.2
         version: 10.0.2(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.3.10(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(mysql2@3.11.0)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4)))
+      axios:
+        specifier: ^1.7.3
+        version: 1.7.3
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -37,7 +40,7 @@ importers:
         version: 3.11.0
       project-name:
         specifier: 'file:'
-        version: file:(express@4.19.2)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4))
+        version: file:(axios@1.7.3)(express@4.19.2)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4))
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -5720,8 +5723,9 @@ snapshots:
 
   process-nextick-args@2.0.1: {}
 
-  project-name@file:(express@4.19.2)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4)):
+  project-name@file:(axios@1.7.3)(express@4.19.2)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4)):
     dependencies:
+      '@nestjs/axios': 3.0.2(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.3)(rxjs@7.8.1)
       '@nestjs/common': 10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/config': 3.2.3(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
       '@nestjs/core': 10.3.10(@nestjs/common@10.3.10(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.3.10)(reflect-metadata@0.2.2)(rxjs@7.8.1)
@@ -5740,6 +5744,7 @@ snapshots:
       - '@nestjs/microservices'
       - '@nestjs/websockets'
       - '@sap/hana-client'
+      - axios
       - better-sqlite3
       - class-transformer
       - class-validator

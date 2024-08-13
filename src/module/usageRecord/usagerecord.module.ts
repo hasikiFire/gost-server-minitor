@@ -11,8 +11,9 @@ import { UsageRecord } from 'src/entities/UsageRecord';
 import { PackageItem } from 'src/entities/PackageItem';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UsageRecord, PackageItem])],
+  imports: [TypeOrmModule.forFeature([UsageRecord, User, PackageItem])],
   controllers: [UsageRecordController],
   providers: [UsageRecordService],
+  exports: [UsageRecordService], // 确保服务被导出
 })
 export class UsageRecordModule {}

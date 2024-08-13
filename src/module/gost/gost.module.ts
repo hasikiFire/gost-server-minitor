@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { GostController } from './gost.controller';
 import { GostService } from './gost.service';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsageRecordController } from '../usageRecord/usagerecord.controller';
-import { UsageRecordService } from '../usageRecord/usagerecord.service';
+import { UsageRecordModule } from '../usageRecord/usagerecord.module';
+import { RequestModule } from 'src/common/request/request.module';
 @Module({
-  imports: [ConfigModule, TypeOrmModule],
-  controllers: [GostController, UsageRecordController],
-  providers: [GostService, UsageRecordService],
+  imports: [ConfigModule, UsageRecordModule, RequestModule],
+  controllers: [GostController],
+  providers: [GostService],
 })
-export class AppModule {}
+export class GostModule {}
