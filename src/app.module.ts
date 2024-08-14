@@ -1,3 +1,4 @@
+import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/obsever/obsever.module';
 // import { ObseverController } from './module/obsever/obsever.controller';
@@ -14,9 +15,11 @@ import { HttpModule } from '@nestjs/axios';
 import { GostModule } from './module/gost/gost.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ReqeustInterceptor } from './common/requestInterceptor';
+import { MyLoggerService } from './common/logger/logger.service';
 
 @Module({
   imports: [
+    LoggerModule,
     RequestModule,
     ConfigModule.forRoot({
       envFilePath: [
@@ -43,6 +46,11 @@ import { ReqeustInterceptor } from './common/requestInterceptor';
   ],
   // controllers: [UsageRecordController, GostController],
   providers: [
+    MyLoggerService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MyLoggerService,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ReqeustInterceptor,

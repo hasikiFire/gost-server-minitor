@@ -3,9 +3,9 @@ https://docs.nestjs.com/modules
 */
 
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { RequestService } from './request.service';
-
+@Global()
 @Module({
   imports: [HttpModule],
   providers: [RequestService],

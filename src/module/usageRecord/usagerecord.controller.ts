@@ -6,6 +6,7 @@ import { Controller, Get } from '@nestjs/common';
 import { UsageRecordService } from './usagerecord.service';
 import { User } from 'src/entities/User';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PackageItem } from 'src/entities/PackageItem';
 @ApiTags('usageRecords')
 @Controller('usageRecords')
 export class UsageRecordController {
@@ -18,7 +19,7 @@ export class UsageRecordController {
   }
 
   @Get('getLimiters')
-  async getLimiters(): Promise<number[]> {
+  async getLimiters(): Promise<PackageItem[]> {
     return this.usageRecordService.findValidPackageitem();
   }
 }

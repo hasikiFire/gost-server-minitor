@@ -29,7 +29,7 @@ export class UsageRecordService {
       const userids = Array.from(new Set(tempIds));
       const users = await this.userRepository.find({
         where: {
-          id: In(userids),
+          userId: In(userids),
         },
       });
       // TODO 获取订阅链接的 token + user_id 即可
@@ -38,13 +38,12 @@ export class UsageRecordService {
     return [];
   }
 
-  async findValidPackageitem(): Promise<number[]> {
+  async findValidPackageitem(): Promise<PackageItem[]> {
     const record = await this.packageItemRepository.find({
       where: { packageStatus: 1, deleted: 0 },
     });
-    console.log('record: ', record);
     if (record.length) {
-      return record.filter((v) => v.deviceLimit).map((v) => v.deviceLimit);
+      return record.filter((v) => v.speedLimit);
     }
     return [];
   }
