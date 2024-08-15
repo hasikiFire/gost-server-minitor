@@ -2,9 +2,15 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Post } from '@nestjs/common';
+import { ObseverService } from './obsever.service';
+import { IEventsResponseDTO } from 'src/DTO/observerDTO';
 
-@ApiTags('obsever')
 @Controller('obsever')
-export class ObseverController {}
+export class ObseverController {
+  constructor(private readonly obseverService: ObseverService) {}
+  @Post('observer')
+  async listenGost(data: IEventsResponseDTO) {
+    return this.obseverService.listenGost(data);
+  }
+}

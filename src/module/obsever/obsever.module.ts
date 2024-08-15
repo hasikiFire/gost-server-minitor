@@ -3,10 +3,14 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
+import { ObseverController } from './obsever.controller';
+import { ObseverService } from './obsever.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsageRecord } from 'src/entities/UsageRecord';
 
 @Module({
-  imports: [],
-  controllers: [],
-  providers: [],
+  imports: [TypeOrmModule.forFeature([UsageRecord])],
+  controllers: [ObseverController],
+  providers: [ObseverService],
 })
 export class ObseverModule {}
