@@ -19,6 +19,7 @@ export class ObseverService {
     console.log('data: ', data);
     // TODO 分用户去记录写入数据库。1分钟吧-记录的当前时间-过去时间
     // 核心问题， inputBytes 啥时候开始计算？gost 程序开始？or 监听开始？ 应用程序重启又怎么计算 ？
+    // TODO 排查 gost 为啥handler 处理不了
     //     curl -XPOST http://127.0.0.1:8000/observer \
     // -d '{"events":[
     // {"kind":"service","service":"service-0","type":"stats",
