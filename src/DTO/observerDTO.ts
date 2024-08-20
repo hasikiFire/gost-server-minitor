@@ -1,11 +1,11 @@
 export interface IEventStatus {
   state: string;
   msg: string;
-  totalConns: number;
-  currentConns: number;
-  inputBytes: number;
-  outputBytes: number;
-  totalErrs: number;
+  totalConns?: number;
+  currentConns?: number;
+  inputBytes?: number;
+  outputBytes?: number;
+  totalErrs?: number;
 }
 
 export interface IEvent {
@@ -16,5 +16,5 @@ export interface IEvent {
 }
 
 export interface IEventsResponseDTO {
-  events: Event[];
+  events: IEvent[];
 }
