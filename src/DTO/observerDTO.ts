@@ -12,7 +12,7 @@ export interface IEvent {
   kind: string;
   service: string;
   type: string;
-  status: IEventStatus;
+  stats: IEventStatus;
 }
 
 export interface IEventsResponseDTO {

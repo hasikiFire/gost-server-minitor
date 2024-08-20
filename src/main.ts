@@ -18,6 +18,6 @@ async function bootstrap() {
   // 2. 以最新的数据库数据加载配置
   await configurationService.loadConfig();
 
-  await app.listen(9000);
+  await app.listen(30000);
 }
 bootstrap();

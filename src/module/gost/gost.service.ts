@@ -17,7 +17,8 @@ export class GostService {
     private readonly logger: MyLoggerService,
   ) {
     this.host = this.configService.get<string>('GOST_HOST');
-    this.beginPort = this.configService.get<number>('GOST_BEGIN_PORT') + 2; // 前两位给 gost api 用
+    this.beginPort =
+      Number(this.configService.get<string>('GOST_BEGIN_PORT')) + 2; // 前两位给 gost api 用
   }
 
   async loadConfig() {
@@ -32,6 +33,7 @@ export class GostService {
    */
   async loadService() {
     const users = await this.usageRecordService.findValidUsers();
+    console.log('loadService users: ', users);
     if (!users?.length) {
       this.logger.log('[GostService][loadService] no users add');
       return;
@@ -56,11 +58,13 @@ export class GostService {
             observePeriod: '120s',
           },
         };
+        console.log('params: ', params);
         const data = await this.requestService.post<IGostReponse>(
           `${this.host}/api/config/services`,
           params,
         );
 
+        console.log('data: ', data);
         if (data.msg === 'OK') {
           this.logger.log(
             '[GostService][loadService] add Service success',
@@ -68,10 +72,7 @@ export class GostService {
           );
         }
       } catch (e) {
-        this.logger.error(
-          '[GostService][loadService] add Service faild',
-          e.msg,
-        );
+        this.logger.error('[GostService][loadService] add Service faild', e);
       }
     });
   }
@@ -130,10 +131,7 @@ export class GostService {
           );
         }
       } catch (e) {
-        this.logger.error(
-          '[GostService][loadLimiter] add Limiter faild',
-          e.msg,
-        );
+        this.logger.error('[GostService][loadLimiter] add Limiter faild', e);
       }
     });
   }

@@ -15,7 +15,7 @@
 #       knock: www.google.com
 #       probeResist: file:/var/www/html/index.html
 #       enableStats: true # 开启统计
-#       observePeriod: 120s
+#       observePeriod: 5s
 
 # 静态配置。
 observers:
@@ -39,11 +39,11 @@ limiters:
     limits:
       - '$$ 1MB 1MB'
 
-authers:
-  - name: auther-0
-    plugin:
-      type: http
-      addr: http://127.0.0.1:30000/auth
+# authers:
+#   - name: auther-0
+#     plugin:
+#       type: http
+#       addr: http://127.0.0.1:30000/auth
 
 api:
   addr: 0.0.0.0:30001

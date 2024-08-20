@@ -29,7 +29,7 @@ export class UsageRecordService {
       const userids = Array.from(new Set(tempIds));
       const users = await this.userRepository.find({
         where: {
-          userId: In(userids),
+          id: In(userids),
         },
       });
       // TODO 获取订阅链接的 token + user_id 即可
