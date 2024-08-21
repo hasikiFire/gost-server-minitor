@@ -18,3 +18,9 @@ export interface IEvent {
 export interface IEventsResponseDTO {
   events: IEvent[];
 }
+
+export interface IAuthUser {
+  username: string;
+  password: string;
+  client: string;
+}

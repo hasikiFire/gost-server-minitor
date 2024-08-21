@@ -5,8 +5,9 @@ https://docs.nestjs.com/providers#services
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MyLoggerService } from 'src/common/logger/logger.service';
-import { IEventsResponseDTO } from 'src/DTO/observerDTO';
+import { IAuthUser, IEventsResponseDTO } from 'src/DTO/observerDTO';
 import { UsageRecord } from 'src/entities/UsageRecord';
+import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class ObseverService {
   constructor(
     @InjectRepository(UsageRecord)
     private readonly usageRecordRepository: Repository<UsageRecord>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly logger: MyLoggerService,
   ) {}
 
@@ -41,7 +44,19 @@ export class ObseverService {
 
     this.updateRecordsWithLock(incrementMap);
   }
-
+  async checkUser(data: IAuthUser) {
+    if (!data) return false;
+    const userID = data.username.split('-')?.[1] || '';
+    if (!userID) return false;
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userID,
+        passwordHash: data.password,
+      },
+    });
+    if (!user) return false;
+    return { ok: true, id: data.username };
+  }
   async updateRecordsWithLock(incrementMap: Record<number, number>) {
     const userIds = Object.keys(incrementMap);
     try {
