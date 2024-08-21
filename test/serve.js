@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 9000;
+const port = 30000;
 
 // 使用 body-parser 中间件来解析 JSON 数据
 app.use(bodyParser.json());
@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 // 通过 service 区分不同用户
 app.post('/observer', (req, res) => {
   console.log('observer Received data:', JSON.stringify(req.body, null, 2));
-  // 在这里处理接收到的数据
+
   res.send('OK');
 });
 
