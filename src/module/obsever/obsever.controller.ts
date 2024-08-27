@@ -19,4 +19,6 @@ export class ObseverController {
   async checkUser(@Body() data: IAuthUser) {
     return this.obseverService.checkUser(data);
   }
+  // TODO get RabbitMQ ?
+  // RabbitMQ
 }
