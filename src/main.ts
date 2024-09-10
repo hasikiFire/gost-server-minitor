@@ -4,7 +4,7 @@ import { DockerCommand } from './command/docker';
 import { setupSwagger } from 'swagger.config';
 import { GostService } from './module/gost/gost.service';
 import { ReqeustInterceptor } from './common/requestInterceptor';
-
+import { initRabbitMQ } from './common/mq';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new ReqeustInterceptor());
@@ -17,7 +17,7 @@ async function bootstrap() {
   const configurationService = app.get(GostService);
   // 2. 以最新的数据库数据加载配置
   await configurationService.loadConfig();
-
   await app.listen(30000);
+  initRabbitMQ();
 }
 bootstrap();

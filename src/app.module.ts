@@ -1,3 +1,5 @@
+import { MqModule } from './module/mq/mq.module';
+import { MqService } from './module/mq/mq.service';
 import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/obsever/obsever.module';
@@ -19,6 +21,7 @@ import { MyLoggerService } from './common/logger/logger.service';
 
 @Module({
   imports: [
+    MqModule,
     LoggerModule,
     RequestModule,
     ConfigModule.forRoot({
@@ -46,6 +49,7 @@ import { MyLoggerService } from './common/logger/logger.service';
   ],
   // controllers: [UsageRecordController, GostController],
   providers: [
+    MqService,
     MyLoggerService,
     {
       provide: APP_INTERCEPTOR,

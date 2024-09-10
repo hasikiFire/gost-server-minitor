@@ -28,6 +28,7 @@
     "@nestjs/swagger": "^7.4.0",
     "@nestjs/terminus": "^10.2.3",
     "@nestjs/typeorm": "^10.0.2",
+    "amqplib": "^0.10.4",
     "axios": "^1.7.3",
     "cross-env": "^7.0.3",
     "mysql2": "^3.11.0",
