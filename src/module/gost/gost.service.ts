@@ -24,8 +24,9 @@ export class GostService {
   async loadConfig() {
     // 增量更新0.02
     // this.loadUsers();
-    this.loadService();
-    this.loadLimiter();
+    // TODO 暂时关闭
+    // this.loadService();
+    // this.loadLimiter();
   }
   /**
    * 权宜之计，等handler能观测就不用这么干
@@ -33,7 +34,7 @@ export class GostService {
    */
   async loadService() {
     const users = await this.usageRecordService.findValidUsers();
-    console.log('loadService users: ', users);
+    // console.log('loadService users: ', users);
     if (!users?.length) {
       this.logger.log('[GostService][loadService] no users add');
       return;
@@ -58,13 +59,13 @@ export class GostService {
             observePeriod: '120s',
           },
         };
-        console.log('params: ', params);
+        // console.log('params: ', params);
         const data = await this.requestService.post<IGostReponse>(
           `${this.host}/api/config/services`,
           params,
         );
 
-        console.log('data: ', data);
+        // console.log('data: ', data);
         if (data.msg === 'OK') {
           this.logger.log(
             '[GostService][loadService] add Service success',
