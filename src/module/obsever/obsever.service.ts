@@ -2,13 +2,21 @@
 https://docs.nestjs.com/providers#services
 */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { MyLoggerService } from 'src/common/logger/logger.service';
-import { IAuthUser, IEventsResponseDTO } from 'src/DTO/observerDTO';
+import {
+  IAuthUser,
+  IEventsResponseDTO,
+  ILimiterDTO,
+  ILimiterRepostDTO,
+} from 'src/DTO/observerDTO';
 import { UsageRecord } from 'src/entities/UsageRecord';
 import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class ObseverService {
@@ -20,6 +28,7 @@ export class ObseverService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly logger: MyLoggerService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async listenGost(data: IEventsResponseDTO) {
@@ -48,15 +57,51 @@ export class ObseverService {
     if (!data) return false;
     const userID = data.username.split('-')?.[1] || '';
     if (!userID) return false;
+
+    const cacheKey = `${data.username}-${data.password}`;
+    const value = await this.cacheManager.get(cacheKey);
+    console.log('value: ', value);
+    if (value) {
+      return { ok: true, id: data.username };
+    } else {
+      // 缓存24h
+      await this.cacheManager.set(cacheKey, data.username, 24 * 60 * 60 * 1000);
+    }
+
     const user = await this.userRepository.findOne({
       where: {
         id: userID,
+        // 一定要校验密码，这是基础，否则拿到ID就能无脑过，后续则不用
         passwordHash: data.password,
       },
     });
     if (!user) return false;
-    return { ok: true, id: data.username };
+    return { ok: true, id: userID };
   }
+
+  async getLimiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
+    const userID = data.id;
+    if (!userID) return { in: 0, out: 0 };
+    const record = await this.usageRecordRepository.findOne({
+      where: {
+        userId: userID,
+      },
+    });
+    if (!record || record.purchaseStatus !== 1) {
+      this.logger.log(
+        '[ObseverService][getLimiter] 找不到套餐/套餐非生效中, userID: ',
+        userID,
+      );
+      return { in: 0, out: 0 };
+    }
+
+    // TODO 网站过滤在此做？
+    const limitNum = record.speedLimit
+      ? record.speedLimit * 1024 * 1024
+      : 99999 * 1024 * 1024; // 无限制
+    return { in: limitNum, out: limitNum };
+  }
+
   async updateRecordsWithLock(incrementMap: Record<number, number>) {
     const userIds = Object.keys(incrementMap);
     try {

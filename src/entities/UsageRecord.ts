@@ -41,6 +41,12 @@ export class UsageRecord {
   consumedDataTransfer: number | null;
 
   @Column('int', {
+    name: 'speed_limit',
+    comment: '数据流量限额（单位：GB）',
+  })
+  speedLimit: number;
+
+  @Column('int', {
     name: 'data_allowance',
     comment: '数据流量限额（单位：GB）',
   })

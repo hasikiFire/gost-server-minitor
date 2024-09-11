@@ -18,6 +18,7 @@ import { GostModule } from './module/gost/gost.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ReqeustInterceptor } from './common/requestInterceptor';
 import { MyLoggerService } from './common/logger/logger.service';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -46,6 +47,9 @@ import { MyLoggerService } from './common/logger/logger.service';
     UsageRecordModule,
     GostModule,
     RequestModule,
+    CacheModule.register({
+      isGlobal: true,
+    }),
   ],
   // controllers: [UsageRecordController, GostController],
   providers: [
@@ -58,6 +62,10 @@ import { MyLoggerService } from './common/logger/logger.service';
     {
       provide: APP_INTERCEPTOR,
       useClass: ReqeustInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
     },
   ],
 })

@@ -4,7 +4,11 @@ https://docs.nestjs.com/controllers#controllers
 
 import { Body, Controller, Post } from '@nestjs/common';
 import { ObseverService } from './obsever.service';
-import { IAuthUser, IEventsResponseDTO } from 'src/DTO/observerDTO';
+import {
+  IAuthUser,
+  IEventsResponseDTO,
+  ILimiterDTO,
+} from 'src/DTO/observerDTO';
 
 @Controller('obsever')
 export class ObseverController {
@@ -19,6 +23,12 @@ export class ObseverController {
   async checkUser(@Body() data: IAuthUser) {
     return this.obseverService.checkUser(data);
   }
+
+  @Post('limiter')
+  async getLimiter(@Body() data: ILimiterDTO) {
+    return this.obseverService.getLimiter(data);
+  }
+
   // TODO get RabbitMQ ?
   // RabbitMQ
 }
