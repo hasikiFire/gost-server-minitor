@@ -1,9 +1,4 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
-
 import { Inject, Injectable } from '@nestjs/common';
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { MyLoggerService } from 'src/common/logger/logger.service';
 import {
@@ -17,7 +12,11 @@ import { User } from 'src/entities/User';
 import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { ICacheKey } from 'src/common/constanst';
 
+/**
+ * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
+ */
 @Injectable()
 export class ObseverService {
   private userTotalBytes: { [k: string]: number } = {};
@@ -31,7 +30,11 @@ export class ObseverService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async listenGost(data: IEventsResponseDTO) {
+  /**
+   * 在 gost.yaml 中设置触发间隔，默认为5分钟
+   *
+   **/
+  async observerGost(data: IEventsResponseDTO) {
     // TODO 待优化成根据client来计算
     const incrementMap: { [k: string]: number } = {};
     data.events.forEach((v) => {
@@ -53,14 +56,15 @@ export class ObseverService {
 
     this.updateRecordsWithLock(incrementMap);
   }
-  async checkUser(data: IAuthUser) {
+
+  async auth(data: IAuthUser) {
     if (!data) return false;
     const userID = data.username.split('-')?.[1] || '';
     if (!userID) return false;
 
-    const cacheKey = `${data.username}-${data.password}`;
+    const cacheKey = `${ICacheKey.AUTH}-${data.username}-${data.password}`;
     const value = await this.cacheManager.get(cacheKey);
-    console.log('value: ', value);
+
     if (value) {
       return { ok: true, id: data.username };
     } else {
@@ -79,9 +83,16 @@ export class ObseverService {
     return { ok: true, id: userID };
   }
 
-  async getLimiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
+  async limiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
     const userID = data.id;
     if (!userID) return { in: 0, out: 0 };
+
+    const cacheKey = `${ICacheKey.LIMITER}-${userID}`;
+    const value = await this.cacheManager.get<number>(cacheKey);
+    if (value) {
+      return { in: value, out: value };
+    }
+
     const record = await this.usageRecordRepository.findOne({
       where: {
         userId: userID,
@@ -94,12 +105,16 @@ export class ObseverService {
       );
       return { in: 0, out: 0 };
     }
-
-    // TODO 网站过滤在此做？
     const limitNum = record.speedLimit
       ? record.speedLimit * 1024 * 1024
       : 99999 * 1024 * 1024; // 无限制
+
+    // 缓存24h
+    await this.cacheManager.set(cacheKey, limitNum, 24 * 60 * 60 * 1000);
+
     return { in: limitNum, out: limitNum };
+
+    // TODO 网站过滤在此做？
   }
 
   async updateRecordsWithLock(incrementMap: Record<number, number>) {

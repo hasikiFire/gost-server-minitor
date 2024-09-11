@@ -15,18 +15,18 @@ export class ObseverController {
   constructor(private readonly obseverService: ObseverService) {}
 
   @Post('observer')
-  async listenGost(@Body() data: IEventsResponseDTO) {
-    return this.obseverService.listenGost(data);
+  async observerGost(@Body() data: IEventsResponseDTO) {
+    return this.obseverService.observerGost(data);
   }
 
   @Post('auth')
-  async checkUser(@Body() data: IAuthUser) {
-    return this.obseverService.checkUser(data);
+  async auth(@Body() data: IAuthUser) {
+    return this.obseverService.auth(data);
   }
 
   @Post('limiter')
-  async getLimiter(@Body() data: ILimiterDTO) {
-    return this.obseverService.getLimiter(data);
+  async limiter(@Body() data: ILimiterDTO) {
+    return this.obseverService.limiter(data);
   }
 
   // TODO get RabbitMQ ?
