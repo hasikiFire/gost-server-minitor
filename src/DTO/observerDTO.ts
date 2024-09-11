@@ -6,6 +6,8 @@ export interface IEventStatus {
   inputBytes?: number;
   outputBytes?: number;
   totalErrs?: number;
+
+  id?: string; // 用户ID
 }
 
 export interface IEvent {

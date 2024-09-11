@@ -7,7 +7,7 @@ import { IGostReponse } from 'src/common/types/gost';
 // 对外暴露 gost 方法-编辑套餐
 // 对内初始化 gost 数据
 @Injectable()
-export class GostService {
+export class ConfigureService {
   private readonly host: string;
   private readonly beginPort: number;
   constructor(

@@ -18,7 +18,7 @@ import { ICacheKey } from 'src/common/constanst';
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
  */
 @Injectable()
-export class ObseverService {
+export class PluginService {
   private userTotalBytes: { [k: string]: number } = {};
 
   constructor(
@@ -35,9 +35,10 @@ export class ObseverService {
    *
    **/
   async observerGost(data: IEventsResponseDTO) {
-    // TODO 待优化成根据client来计算
     const incrementMap: { [k: string]: number } = {};
     data.events.forEach((v) => {
+      // TODO 待优化成根据client来计算
+      // const userID = v.id;
       const userID = v.service.split('-')[1];
       // gost 程序启动后累计
       const totalByte =
@@ -100,7 +101,7 @@ export class ObseverService {
     });
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
-        '[ObseverService][getLimiter] 找不到套餐/套餐非生效中, userID: ',
+        '[plugin][getLimiter] 找不到套餐/套餐非生效中, userID: ',
         userID,
       );
       return { in: 0, out: 0 };
@@ -137,15 +138,12 @@ export class ObseverService {
 
           await transactionalEntityManager.save(records);
           this.logger.log(
-            '[ObseverService][listenGost]  update records success',
+            '[pluginService][listenGost]  update records success',
           );
         },
       );
     } catch (e) {
-      this.logger.error(
-        '[ObseverService][listenGost]  update records faild',
-        e,
-      );
+      this.logger.error('[pluginService][listenGost]  update records faild', e);
     }
   }
 }
