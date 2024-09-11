@@ -30,6 +30,7 @@ export class RabbitMQConsumer {
             }
             console.log(['RabbitMQ'], '创建mq连接成功');
             this.channel = channel;
+            // TODO 交换机
             await channel.assertQueue(this.queue, {
               durable: true,
             });
