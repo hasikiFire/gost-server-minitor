@@ -32,9 +32,10 @@ export class PluginService {
 
   /**
    * 在 gost.yaml 中设置触发间隔，默认为5分钟
-   *
+   * TODO 待观察，多用户是咋样的，有增量才会走这里吧？
    **/
   async observerGost(data: IEventsResponseDTO) {
+    // 单位 byte
     const incrementMap: { [k: string]: number } = {};
     data.events.forEach((v) => {
       // TODO 待优化成根据client来计算
@@ -48,6 +49,7 @@ export class PluginService {
 
       // 计算增量
       const increment = totalByte - previousTotalByte;
+      if (!increment) return;
       // 更新 userID 的 totalByte
       if (!incrementMap[userID]) {
         incrementMap[userID] = 0;
@@ -69,8 +71,8 @@ export class PluginService {
     if (value) {
       return { ok: true, id: data.username };
     } else {
-      // 缓存24h
-      await this.cacheManager.set(cacheKey, data.username, 24 * 60 * 60 * 1000);
+      // 缓存6h
+      await this.cacheManager.set(cacheKey, data.username, 6 * 60 * 60 * 1000);
     }
 
     const user = await this.userRepository.findOne({
@@ -78,6 +80,7 @@ export class PluginService {
         id: userID,
         // 一定要校验密码，这是基础，否则拿到ID就能无脑过，后续则不用
         passwordHash: data.password,
+        status: 1,
       },
     });
     if (!user) return false;
@@ -97,8 +100,10 @@ export class PluginService {
     const record = await this.usageRecordRepository.findOne({
       where: {
         userId: userID,
+        purchaseStatus: 1,
       },
     });
+
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
         '[plugin][getLimiter] 找不到套餐/套餐非生效中, userID: ',
@@ -110,16 +115,23 @@ export class PluginService {
       ? record.speedLimit * 1024 * 1024
       : 99999 * 1024 * 1024; // 无限制
 
-    // 缓存24h
-    await this.cacheManager.set(cacheKey, limitNum, 24 * 60 * 60 * 1000);
+    // 缓存6h
+    await this.cacheManager.set(cacheKey, limitNum, 1 * 60 * 60 * 1000);
 
     return { in: limitNum, out: limitNum };
 
     // TODO 网站过滤在此做？
   }
 
+  /**
+   * 会有死锁？
+   * 死锁：事务 A 先锁定行 1，等待锁定行 2；事务 B 先锁定行 2，然后等待锁定行 1，最终两者相互等待，导致死锁
+   * 分布式系统非常大概率会出现死锁！因为都是批量更新 usage_record 的场景！
+   * 解决方法： 1. 对一个表而言，应尽量以固定的顺序存取表中的行
+   * @param incrementMap
+   */
   async updateRecordsWithLock(incrementMap: Record<number, number>) {
-    const userIds = Object.keys(incrementMap);
+    const userIds = Object.keys(incrementMap).sort(); // 固定的顺序存取表中的行，这样只会发生锁的阻塞等待
     try {
       await this.usageRecordRepository.manager.transaction(
         async (transactionalEntityManager) => {
@@ -130,14 +142,21 @@ export class PluginService {
             .getMany();
 
           records = records.map((v) => {
-            v.consumedDataTransfer += Math.round(
+            const tempIncrement = Math.round(
               (incrementMap[v.userId] || 0) / 1024,
             );
+            const gb = Math.round(tempIncrement / 1024 / 1024 / 1024);
+            if (gb >= v.dataAllowance) {
+              v.purchaseStatus = 2;
+              // 刷新 limiter 缓存，侧面禁用
+              const cacheKey = `${ICacheKey.LIMITER}-${v.userId}`;
+              this.cacheManager.del(cacheKey);
+            }
+            v.consumedDataTransfer += tempIncrement;
             return v;
           });
 
           await transactionalEntityManager.save(records);
-          // TODO 到达限制流量更新 usageRecord 状态为流量用尽
           this.logger.log(
             '[pluginService][listenGost]  update records success',
           );
