@@ -10,8 +10,8 @@ ENV=${1:-main} # 默认环境为 main
 BRANCH_NAME=$ENV
 
 # 定义 Docker 镜像和容器名称
-IMAGE_NAME="hasikifire/gost-server-minitor-$ENV"
-CONTAINER_NAME="gost-server-minitor-$ENV"
+IMAGE_NAME="hasikifire/gost-server-$ENV"
+CONTAINER_NAME="gost-server-$ENV"
 
 # 定义 GitHub 仓库 URL 和本地路径
 REPO_URL="https://github.com/hasikiFire/gost-server-minitor.git"
@@ -31,6 +31,9 @@ chmod 755 $LOCAL_PATH
 echo "克隆仓库..."
 git clone $REPO_URL $LOCAL_PATH
 
+echo "复制 .env.prod "
+mv -f .env.prod "$LOCAL_PATH/.env.prod"
+
 cd $LOCAL_PATH
 # 切换到指定分支
 echo "切换到 $BRANCH_NAME 分支..."
@@ -41,7 +44,8 @@ echo "构建 Docker 镜像..."
 docker build -t $IMAGE_NAME .
 
 # Step 4: 停止并删除现有的 Docker 容器
-if [ "$(docker ps -a -q -f name=$CONTAINER_NAME)" ]; then
+containers=$(docker ps -a -q -f name=$CONTAINER_NAME)
+if [ -n "$containers" ]; then
   echo "停止现有容器..."
   docker stop $CONTAINER_NAME
   echo "删除容器..."
