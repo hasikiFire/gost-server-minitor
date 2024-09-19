@@ -32,7 +32,7 @@ echo "克隆仓库..."
 git clone $REPO_URL $LOCAL_PATH
 
 echo "复制 .env.production "
-mv -f .env.production "$LOCAL_PATH/.env.production"
+cp -f .env.production "$LOCAL_PATH/.env.production"
 
 cd $LOCAL_PATH
 # 切换到指定分支

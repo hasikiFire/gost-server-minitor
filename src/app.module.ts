@@ -39,6 +39,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
       database: process.env.TYPEORM_DATABASE,
       synchronize: true,
       autoLoadEntities: true,
+      // logging: true, // 启用日志记录
     }),
     HttpModule,
     ObseverModule,

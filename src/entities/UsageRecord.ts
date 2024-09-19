@@ -42,6 +42,7 @@ export class UsageRecord {
 
   @Column('int', {
     name: 'speed_limit',
+    nullable: true,
     comment: '数据流量限额（单位：GB）',
   })
   speedLimit: number;
