@@ -18,24 +18,24 @@ jobs:
       if: github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.SERVER_IP }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        host: ${{ SERVER_IP.SERVER_IP }}
+        username: ${{ SERVER_IP.SERVER_USER }}
+        key: ${{ SERVER_IP.SSH_PRIVATE_KEY }}
         passphrase: ''
         port: 22
         script: |
           cd ${{ secrets.DEPLOY_PATH }}
-          sudo ./build.sh  # 执行 build.sh 脚本
+          sudo ./build.sh production 
 
     - name: Deploy to Test Environment (Test Branch)
       if: github.ref == 'refs/heads/test'
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.TEST_SERVER_IP }}
-        username: ${{ secrets.TEST_SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        host: ${{ SERVER_IP.SERVER_IP }}
+        username: ${{ SERVER_IP.SERVER_USER }}
+        key: ${{ SERVER_IP.SSH_PRIVATE_KEY }}
         passphrase: ''
         port: 22
         script: |
-          cd ${{ secrets.TEST_DEPLOY_PATH }}
-          sudo ./build.sh  # 执行 build.sh 脚本
+          cd ${{ SERVER_IP.DEPLOY_PATH }}
+          sudo ./build.sh test
