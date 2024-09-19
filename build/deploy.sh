@@ -4,7 +4,7 @@
 set -e
 
 # 定义环境
-ENV=${1:-test} # 默认环境为 test
+ENV=${1:-main} # 默认环境为 main
 
 # 定义分支
 BRANCH_NAME=$ENV
