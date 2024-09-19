@@ -41,7 +41,7 @@ echo "构建 Docker 镜像..."
 docker build -t $IMAGE_NAME .
 
 # Step 4: 停止并删除现有的 Docker 容器
-if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
+if [ "$(docker ps -a -q -f name=$CONTAINER_NAME)" ]; then
   echo "停止现有容器..."
   docker stop $CONTAINER_NAME
   echo "删除容器..."
