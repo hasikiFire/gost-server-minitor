@@ -18,3 +18,5 @@ RUN pnpm run build
 
 # 使用 PM2 运行应用
 CMD ["pm2-runtime", "dist/main.js"]
+
+EXPOSE 30000
