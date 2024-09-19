@@ -3,13 +3,12 @@ FROM node:20
 WORKDIR /app
 
 RUN npm install -g pnpm
-RUN pnpm setup
+RUN npm install -g pm2
 
 # 利用 Docker 缓存，首先只复制 package.json 和 pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile
-RUN pnpm add pm2 -g
 
 # 复制整个项目到容器中
 COPY . .
