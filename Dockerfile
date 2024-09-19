@@ -1,25 +1,21 @@
-# 使用官方的 Node.js 运行时镜像作为基础镜像
-FROM node:18
+FROM node:20
 
-# 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 package-lock.json 到容器中
-# 可以利用 docker 缓存？
-COPY package*.json ./
+RUN npm install -g pnpm
 
-# 安装应用程序依赖
-RUN npm install
+# 利用 Docker 缓存，首先只复制 package.json 和 pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
 
-# 全局安装 PM2
-RUN npm install pm2 -g
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm add pm2 -g
 
 # 复制整个项目到容器中
 COPY . .
 
-# 编译 NestJS 项目 (如果需要)
-RUN npm run build
-
+# 构建项目
+RUN pnpm run build
 
 # 使用 PM2 运行应用
 CMD ["pm2-runtime", "dist/main.js"]
