@@ -1,5 +1,5 @@
 # 使用官方的 Node.js 运行时镜像作为基础镜像
-FROM node:18-alpine
+FROM node:18
 
 # 设置工作目录
 WORKDIR /app
@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装应用程序依赖
-RUN npm install --production
+RUN npm install
 
 # 全局安装 PM2
 RUN npm install pm2 -g
