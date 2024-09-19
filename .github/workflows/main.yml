@@ -18,9 +18,9 @@ jobs:
       if: github.ref == 'refs/heads/main'
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ SERVER_IP.SERVER_IP }}
-        username: ${{ SERVER_IP.SERVER_USER }}
-        key: ${{ SERVER_IP.SSH_PRIVATE_KEY }}
+        host: ${{ secrets.SERVER_IP  }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ''
         port: 22
         script: |
@@ -31,11 +31,11 @@ jobs:
       if: github.ref == 'refs/heads/test'
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ SERVER_IP.SERVER_IP }}
-        username: ${{ SERVER_IP.SERVER_USER }}
-        key: ${{ SERVER_IP.SSH_PRIVATE_KEY }}
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ''
         port: 22
         script: |
-          cd ${{ SERVER_IP.DEPLOY_PATH }}
+          cd ${{ secrets.DEPLOY_PATH }}
           sudo ./build.sh test
