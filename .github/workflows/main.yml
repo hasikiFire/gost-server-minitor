@@ -26,7 +26,7 @@ jobs:
         script: |
           cd ${{ secrets.DEPLOY_PATH }}
           ls
-          sudo ./deploy.sh production 
+          sudo ./deploy.sh main 
 
     - name: Deploy to Test Environment (Test Branch)
       if: github.ref == 'refs/heads/test'
