@@ -1,6 +1,12 @@
 version: '3.8'
 
 services:
+  gost-server:
+    image: gost-server-${ENV}
+    container_name: nest-app
+    volumes:
+      - ./dist/config:/app/config # 假设配置文件在这个路径
+    restart: unless-stopped
   gost:
     image: gogost/gost
     container_name: gostv3
