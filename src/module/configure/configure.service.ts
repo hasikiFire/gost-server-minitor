@@ -17,8 +17,7 @@ export class ConfigureService {
     private readonly logger: MyLoggerService,
   ) {
     this.host = this.configService.get<string>('GOST_HOST');
-    this.beginPort =
-      Number(this.configService.get<string>('GOST_BEGIN_PORT')) + 2; // 前两位给 gost api 用
+    this.beginPort = Number(this.configService.get<string>('APP_PORT')) + 2; // 前两位给 gost api 用
   }
 
   async loadConfig() {

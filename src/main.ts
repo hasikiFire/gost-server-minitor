@@ -14,7 +14,7 @@ async function bootstrap() {
   // 2. 以最新的数据库数据加载配置
   const configureServiceService = app.get(ConfigureService);
   await configureServiceService.loadConfig();
-  await app.listen(30000);
+  await app.listen(process.env.APP_PORT);
   const mqInstanc = new RabbitMQ(logger);
   mqInstanc.init();
 }
