@@ -1,4 +1,6 @@
-FROM node:20
+FROM node:20-alpine
+
+ENV APP_PORT=30000 
 
 WORKDIR /app
 
@@ -17,6 +19,6 @@ COPY . .
 RUN pnpm run build
 
 # 使用 PM2 运行应用
-CMD ["pm2-runtime", "dist/src/main.js"]
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]
 
-EXPOSE 30000
+EXPOSE $APP_PORT
