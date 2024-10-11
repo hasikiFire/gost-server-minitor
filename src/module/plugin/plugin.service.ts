@@ -65,7 +65,7 @@ export class PluginService {
     const userID = data.username.split('-')?.[1] || '';
     if (!userID) return false;
 
-    const cacheKey = `${ICacheKey.AUTH}-${data.username}-${data.password}`;
+    const cacheKey = `${ICacheKey.AUTH}-${userID}`;
     const value = await this.cacheManager.get(cacheKey);
 
     if (value) {
@@ -84,6 +84,14 @@ export class PluginService {
       },
     });
     if (!user) return false;
+    // 找到有效的使用记录
+    const hasValidRecord = await this.usageRecordRepository.findOne({
+      where: {
+        userId: userID,
+        purchaseStatus: 1,
+      },
+    });
+    if (!hasValidRecord) return false;
     return { ok: true, id: userID };
   }
 
@@ -146,11 +154,16 @@ export class PluginService {
               (incrementMap[v.userId] || 0) / 1024,
             );
             const gb = Math.round(tempIncrement / 1024 / 1024 / 1024);
+            // 使用流量到达限制
             if (gb >= v.dataAllowance) {
               v.purchaseStatus = 2;
-              // 刷新 limiter 缓存，侧面禁用
-              const cacheKey = `${ICacheKey.LIMITER}-${v.userId}`;
-              this.cacheManager.del(cacheKey);
+
+              // 删除本系统缓存，瞬间禁用
+              const lKey = `${ICacheKey.LIMITER}-${v.userId}`;
+              const aKey = `${ICacheKey.AUTH}-${v.userId}`;
+              this.cacheManager.del(lKey);
+              this.cacheManager.del(aKey);
+              // TODO 通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~
             }
             v.consumedDataTransfer += tempIncrement;
             return v;

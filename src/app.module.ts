@@ -1,3 +1,4 @@
+import { TransferModule } from './module/transfer/transfer.module';
 import { MqModule } from './module/mq/mq.module';
 import { MqService } from './module/mq/mq.service';
 import { LoggerModule } from './common/logger/logger.module';
@@ -20,6 +21,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    TransferModule,
     MqModule,
     LoggerModule,
     RequestModule,

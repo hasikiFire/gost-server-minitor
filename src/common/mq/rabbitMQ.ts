@@ -7,10 +7,12 @@ export class RabbitMQConsumer {
   private readonly queue: string;
   private readonly rabbitmqUrl: string;
   private readonly logger: MyLoggerService; // 添加 Logger 服务
+  private readonly exchange = 'gost_server_monitor'; // Fanout 交换机名称
 
-  constructor(queue: string, rabbitmqUrl: string) {
+  constructor(queue: string, rabbitmqUrl: string, logger: MyLoggerService) {
     this.queue = queue;
     this.rabbitmqUrl = rabbitmqUrl;
+    this.logger = logger;
   }
 
   // 初始化连接和信道
@@ -26,15 +28,38 @@ export class RabbitMQConsumer {
 
           connection.createChannel(async (error1, channel) => {
             if (error1) {
-              throw error1;
+              reject(error1);
             }
-            console.log(['RabbitMQ'], '创建mq连接成功');
+            this.logger.log(['RabbitMQ'], '创建mq连接成功');
             this.channel = channel;
-            // TODO 交换机
-            await channel.assertQueue(this.queue, {
+
+            await channel.assertExchange(this.exchange, 'fanout', {
               durable: true,
             });
-            console.log(['RabbitMQ'], `队列 ${this.queue} 准备完成`);
+            const q = await channel.assertQueue(this.queue, {
+              durable: true,
+            });
+            this.logger.log(['RabbitMQ'], `队列 ${this.queue} 准备完成`);
+            // 将队列绑定到 Fanout 交换机
+            await channel.bindQueue(q.queue, this.exchange, '');
+
+            channel.consume(
+              q.queue,
+              (msg) => {
+                console.log('msg: ', msg);
+                if (msg !== null) {
+                  // 注意异步处理消息
+                  this.logger.log(
+                    ['RabbitMQ'],
+                    `收到消息: ${msg.content.toString()}`,
+                  );
+                  channel.ack(msg); // 确认收到消息
+                }
+              },
+              {
+                noAck: false, // 开启消息确认机制
+              },
+            );
 
             resolve(true);
           });
