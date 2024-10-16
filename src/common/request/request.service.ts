@@ -37,4 +37,29 @@ export class RequestService {
       ),
     );
   }
+
+  put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...(config?.headers || {}) };
+    return firstValueFrom(
+      this.httpService.put<T>(url, data, { ...config, headers }).pipe(
+        map((response: any) => response.data),
+        catchError((error) => {
+          return throwError(() => error.response?.data);
+        }),
+      ),
+    );
+  }
+
+  // 新增 delete 方法
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const headers = { ...this.defaultHeaders, ...(config?.headers || {}) };
+    return firstValueFrom(
+      this.httpService.delete<T>(url, { ...config, headers }).pipe(
+        map((response: any) => response.data),
+        catchError((error) => {
+          return throwError(() => error.response?.data);
+        }),
+      ),
+    );
+  }
 }

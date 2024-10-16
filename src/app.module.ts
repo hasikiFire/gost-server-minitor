@@ -1,4 +1,3 @@
-import { TransferModule } from './module/transfer/transfer.module';
 import { MqModule } from './module/mq/mq.module';
 import { MqService } from './module/mq/mq.service';
 import { LoggerModule } from './common/logger/logger.module';
@@ -18,10 +17,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ReqeustInterceptor } from './common/requestInterceptor';
 import { MyLoggerService } from './common/logger/logger.service';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { GatewayModule } from './module/gateway/gateway.module';
 
 @Module({
   imports: [
-    TransferModule,
+    GatewayModule,
     MqModule,
     LoggerModule,
     RequestModule,
