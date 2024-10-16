@@ -1,6 +1,7 @@
 import { Channel, Connection } from 'amqplib';
 import * as amqp from 'amqplib/callback_api';
 import { MyLoggerService } from '../logger/logger.service';
+import { GatewayService } from 'src/module/gateway/gateway.service';
 export class RabbitMQConsumer {
   private connection: Connection | null = null;
   private channel: Channel | null = null;
@@ -8,6 +9,7 @@ export class RabbitMQConsumer {
   private readonly rabbitmqUrl: string;
   private readonly logger: MyLoggerService; // 添加 Logger 服务
   private readonly exchange = 'gost_server_monitor'; // Fanout 交换机名称
+  private readonly gatewayService: GatewayService; // 添加 Logger 服务
 
   constructor(queue: string, rabbitmqUrl: string, logger: MyLoggerService) {
     this.queue = queue;
@@ -53,6 +55,7 @@ export class RabbitMQConsumer {
                     ['RabbitMQ'],
                     `收到消息: ${msg.content.toString()}`,
                   );
+                  this.handleMqMessage(msg);
                   channel.ack(msg); // 确认收到消息
                 }
               },
@@ -71,28 +74,22 @@ export class RabbitMQConsumer {
     });
   }
 
-  // 消费消息
-  public async consumeMessages(): Promise<void> {
-    if (!this.channel) {
-      throw new Error(
-        'Channel is not initialized. Please call initialize() first.',
-      );
-    }
+  // 转发消息的方法，根据方法名动态调用
+  async handleMqMessage(payload: IMQMessage) {
+    const { method, params } = payload;
 
     try {
-      console.log(`Waiting for messages in queue: ${this.queue}`);
-
-      // 消费消息
-      this.channel.consume(this.queue, (msg) => {
-        if (msg !== null) {
-          console.log('Received message:', msg.content.toString());
-
-          // 处理完消息后确认
-          this.channel!.ack(msg);
-        }
-      });
+      // 动态调用对应的服务方法
+      await this.gatewayService[method](params);
+      this.logger.log(
+        '[RabbitMQConsumer] handleMqMessage success',
+        `method: ${method}, params: ${params}`,
+      );
     } catch (error) {
-      console.error('Error consuming messages:', error);
+      this.logger.error(
+        '[RabbitMQConsumer] handleMqMessage error',
+        `method: ${method}, params: ${params}`,
+      );
     }
   }
 

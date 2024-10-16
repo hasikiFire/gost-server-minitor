@@ -12,8 +12,6 @@ export class RabbitMQ {
       const queue = RabbitMQConfig.getQueueName();
       const consumer = new RabbitMQConsumer(queue, rabbitmqUrl, this.logger);
       await consumer.initialize();
-      console.log('consumeMessages');
-      await consumer.consumeMessages();
     } catch (e) {
       this.logger.error('RabbitMQ init', e);
     }

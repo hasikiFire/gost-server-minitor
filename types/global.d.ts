@@ -18,6 +18,11 @@ declare global {
   export interface IListRespData<T = any> {
     items: T[];
   }
+
+  export interface IMQMessage {
+    method: string;
+    params: any; // 可以根据你的具体参数定义更详细的类型
+  }
 }
 
 export {};
