@@ -25,6 +25,7 @@ tls:
   certFile: /etc/gost/fullchain.pem
   keyFile: /etc/gost/privkey.pem
 
+# 固定值，接口观测
 observers:
   - name: observer-0
     plugin:
@@ -32,12 +33,14 @@ observers:
       addr: http://127.0.0.1:30000/observer
       timeout: 10s
 
+# 固定值，接口观测
 authers:
   - name: auther-0
     plugin:
       type: http
       addr: http://127.0.0.1:30000/auth
 
+# 固定值，接口观测
 limiters:
   - name: limiter-0
     plugin:

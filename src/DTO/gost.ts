@@ -239,10 +239,10 @@ export interface ChainConfig {
   hops?: Array<HopConfig>;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof ChainConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {string}
@@ -422,10 +422,10 @@ export interface ConnectorConfig {
   auth?: AuthConfig;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof ConnectorConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {TLSConfig}
@@ -453,10 +453,10 @@ export interface DialerConfig {
   auth?: AuthConfig;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof DialerConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {TLSConfig}
@@ -552,10 +552,10 @@ export interface ForwardNodeConfig {
   http?: HTTPNodeConfig;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof ForwardNodeConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {string}
@@ -750,10 +750,10 @@ export interface HandlerConfig {
   limiter?: string;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof HandlerConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {string}
@@ -1099,10 +1099,10 @@ export interface ListenerConfig {
   chainGroup?: ChainGroupConfig;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof ListenerConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {TLSConfig}
@@ -1357,10 +1357,10 @@ export interface NodeConfig {
   interface?: string;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof NodeConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {string}
@@ -1537,10 +1537,10 @@ export interface RecorderConfig {
 export interface RecorderObject {
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof RecorderObject
    */
-  Metadata?: { [key: string]: object };
+  Metadata?: { [key: string]: any };
   /**
    *
    * @type {string}
@@ -1876,10 +1876,10 @@ export interface ServiceConfig {
   loggers?: Array<string>;
   /**
    *
-   * @type {{ [key: string]: object; }}
+   * @type {{ [key: string]: any; }}
    * @memberof ServiceConfig
    */
-  metadata?: { [key: string]: object };
+  metadata?: { [key: string]: any };
   /**
    *
    * @type {string}

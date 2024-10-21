@@ -10,6 +10,8 @@ import { MyLoggerService } from 'src/common/logger/logger.service';
 import { RequestService } from 'src/common/request/request.service';
 import { IGostReponse } from 'src/common/types/gost';
 import { Cache } from 'cache-manager';
+import { Config, ServiceConfig } from 'src/DTO/gost';
+import { ResultData } from 'src/common/utils/result';
 
 @Injectable()
 export class GatewayService {
@@ -18,10 +20,32 @@ export class GatewayService {
     'deleteGostService',
     'deleteExpiredPackage',
     'updateUserPassword',
-    'deleteExpiredPackage',
+    'editGostService',
+    'getGostConfig',
   ];
   private readonly host: string;
-
+  private readonly defaultGostConfig: ServiceConfig = {
+    handler: {
+      type: 'http2',
+      auther: 'auther-0',
+      limiter: 'limiter-0',
+      observer: 'observer-0',
+      metadata: {
+        enableStats: true,
+        observePeriod: '5s',
+      },
+    },
+    listener: {
+      type: 'http2',
+    },
+    observer: 'observer-0',
+    metadata: {
+      knock: 'www.google.com',
+      probeResist: 'file:/var/www/html/index.html',
+      enableStats: 'true',
+      observePeriod: '120s',
+    },
+  };
   constructor(
     private readonly requestService: RequestService,
     private readonly configService: ConfigService,
@@ -46,57 +70,64 @@ export class GatewayService {
     }
   }
 
-  /**
-   * 新增 GOST service
-   * 请求 GOST API 并创建新的服务
-   */
-  async addGostService(serviceData: any): Promise<IBaseResponse> {
-    console.log('serviceData: ', serviceData);
+  async getGostConfig(): Promise<Config> {
     try {
-      const params = {
-        // name: `service-${v.id}`,
-        // 获取现有 server port + 1
-        // addr: `:${this.beginPort + index}`,
-        handler: {
-          type: 'http2',
-        },
-        listener: {
-          type: 'http2',
-        },
-        observer: 'observer-0',
-        metadata: {
-          knock: 'www.google.com',
-          probeResist: 'file:/var/www/html/index.html',
-          enableStats: 'true',
-          observePeriod: '120s',
-        },
-      };
-      // console.log('params: ', params);
-      const data = await this.requestService.post<IGostReponse>(
-        `${this.host}/api/config/services`,
-        params,
+      const data = await this.requestService.get<Config>(
+        `${this.host}/api/config`,
       );
-
-      // console.log('data: ', data);
-      if (data.msg === 'OK') {
-        this.logger.log('[GostService][loadService] add Service success');
-      }
-
-      return {
-        code: 200,
-        message: '增加服务成功',
-        data,
-      };
+      return data;
     } catch (error) {
       throw new Error('新增 GOST service 失败: ' + error.message);
     }
   }
 
   /**
-   * 删除 GOST service
+   * 新增套餐 => 等效新增 gost 端口（好像一个端口也不是不行...）
+   * 因为套餐数值已存在用户使用表中通过接口获取
+   *
+   */
+  async addGostService(serviceData: ServiceConfig) {
+    console.log('serviceData: ', serviceData);
+    const config = await this.getGostConfig();
+    if (!config) {
+      return ResultData.fail(
+        500,
+        '没有默认 gost 配置， 请确认是否启动 gost 服务',
+      );
+    }
+
+    const lastService = config.services?.pop();
+    let defaultAddr = 0;
+    if (lastService) {
+      defaultAddr = Number(lastService.addr.split(':')[1]) + 1;
+    }
+
+    try {
+      const params = {
+        name: serviceData.name ? serviceData.name : `service-${defaultAddr}`,
+        addr: serviceData.addr ? serviceData.addr : `:${defaultAddr}`,
+        ...this.defaultGostConfig,
+        ...serviceData,
+      } as unknown as ServiceConfig;
+      const data = await this.requestService.post<IGostReponse>(
+        `${this.host}/api/config/services`,
+        params,
+      );
+
+      if (data.msg === 'OK') {
+        this.logger.log('[GostService][loadService] add Service success');
+      }
+      return ResultData.ok(data, '增加服务成功');
+    } catch (error) {
+      throw new Error('新增 GOST service 失败: ' + error.message);
+    }
+  }
+
+  /**
+   * 删除套餐
    * 请求 GOST API 并删除指定的服务
    */
-  async deleteGostService(serviceId: string): Promise<IBaseResponse> {
+  async deleteGostService(serviceId: string) {
     try {
       const data = await this.requestService.delete<IGostReponse>(
         `${this.host}/api/config/services/${serviceId}`,
@@ -108,24 +139,17 @@ export class GatewayService {
           serviceId,
         );
       }
-
-      return {
-        code: 200,
-        message: '删除成功',
-        data,
-      };
+      return ResultData.ok(data, '删除成功');
     } catch (error) {
       throw new Error('删除 GOST service 失败: ' + error.message);
     }
   }
 
-  async deleteExpiredPackage(userID: string): Promise<IBaseResponse> {
+  async deleteExpiredPackage(userID: string) {
     try {
       this.deleteUserCache(userID);
-      return {
-        code: 200,
-        message: '删除套餐缓存成功',
-      };
+
+      return ResultData.ok();
     } catch (error) {
       console.error('处理套餐到期时出错:', error);
     }
@@ -135,25 +159,24 @@ export class GatewayService {
    * 删除用户的缓存信息
    * 删除缓存让用户无法通过认证
    */
-  async deleteUser(userId: string): Promise<IBaseResponse> {
+  async deleteUser(userId: string) {
     try {
       this.deleteUserCache(userId);
-      return {
-        code: 200,
-        message: '删除用户缓存成功',
-      };
+      return ResultData.ok();
     } catch (error) {
       throw new Error(`删除缓存失败: ${error.message}`);
     }
   }
 
-  async updateUserPassword(userId: string): Promise<IBaseResponse> {
+  /**
+   * 更新密码
+   * @param userId
+   * @returns
+   */
+  async updateUserPassword(userId: string) {
     try {
       await this.deleteUserCache(userId);
-      return {
-        code: 200,
-        message: '删除用户缓存成功',
-      };
+      return ResultData.ok();
     } catch (error) {
       throw new Error(`修改用户密码失败: ${error.message}`);
     }
