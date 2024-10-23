@@ -1,5 +1,5 @@
-import { MqModule } from './module/mq/mq.module';
-import { MqService } from './module/mq/mq.service';
+import { AuthModule } from './module/auth/auth.module';
+import { AuthService } from './module/auth/auth.service';
 import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/plugin/plugin.module';
@@ -21,8 +21,8 @@ import { GatewayModule } from './module/gateway/gateway.module';
 
 @Module({
   imports: [
+    AuthModule,
     GatewayModule,
-    MqModule,
     LoggerModule,
     RequestModule,
     ConfigModule.forRoot({
@@ -52,9 +52,8 @@ import { GatewayModule } from './module/gateway/gateway.module';
       isGlobal: true,
     }),
   ],
-  // controllers: [UsageRecordController, GostController],
   providers: [
-    MqService,
+    AuthService,
     MyLoggerService,
     {
       provide: APP_INTERCEPTOR,

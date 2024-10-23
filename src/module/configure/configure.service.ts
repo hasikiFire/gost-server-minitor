@@ -4,8 +4,13 @@ import { ConfigService } from '@nestjs/config';
 import { RequestService } from 'src/common/request/request.service';
 import { MyLoggerService } from 'src/common/logger/logger.service';
 import { IGostReponse } from 'src/common/types/gost';
+import { DefaultGostConfig } from 'src/config/gostConfig';
 // 对外暴露 gost 方法-编辑套餐
 // 对内初始化 gost 数据
+
+/**
+ * @deprecated
+ */
 @Injectable()
 export class ConfigureService {
   private readonly host: string;
@@ -21,14 +26,15 @@ export class ConfigureService {
   }
 
   async loadConfig() {
-    // 增量更新0.02
-    // this.loadUsers();
     // TODO 暂时关闭
     // this.loadService();
+    // 废弃 PluginService auth 接口
+    // this.loadUsers();
+    // 废弃 流量限制通过 PluginService limiter 接口
     // this.loadLimiter();
   }
   /**
-   * 权宜之计，等handler能观测就不用这么干
+   * 权宜之计，等handler能观测就不用这么干，在新增套餐里去新增 services
    * @returns
    */
   async loadService() {
@@ -44,19 +50,7 @@ export class ConfigureService {
         const params = {
           name: `service-${v.id}`,
           addr: `:${this.beginPort + index}`,
-          handler: {
-            type: 'http2',
-          },
-          listener: {
-            type: 'http2',
-          },
-          observer: 'observer-0',
-          metadata: {
-            knock: 'www.google.com',
-            probeResist: 'file:/var/www/html/index.html',
-            enableStats: 'true',
-            observePeriod: '120s',
-          },
+          ...DefaultGostConfig,
         };
         // console.log('params: ', params);
         const data = await this.requestService.post<IGostReponse>(
@@ -76,6 +70,11 @@ export class ConfigureService {
       }
     });
   }
+
+  /**
+   * @deprecated 废弃 PluginService auth 接口
+   * @returns
+   */
   // async loadUsers() {
   //   const users = await this.usageRecordService.findValidUsers();
   //   if (!users?.length) {
@@ -106,6 +105,11 @@ export class ConfigureService {
   //     this.logger.error('[GostService][loadUsers] add user faild', e.msg);
   //   }
   // }
+
+  /**
+   * @deprecated 废弃 流量限制通过 PluginService limiter 接口
+   * @returns
+   */
   async loadLimiter() {
     const packageItems = await this.usageRecordService.findValidPackageitem();
     if (!packageItems?.length) {

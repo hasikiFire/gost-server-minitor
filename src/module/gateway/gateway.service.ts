@@ -12,6 +12,7 @@ import { IGostReponse } from 'src/common/types/gost';
 import { Cache } from 'cache-manager';
 import { Config, ServiceConfig } from 'src/DTO/gost';
 import { ResultData } from 'src/common/utils/result';
+import { DefaultGostConfig } from 'src/config/gostConfig';
 
 @Injectable()
 export class GatewayService {
@@ -24,28 +25,7 @@ export class GatewayService {
     'getGostConfig',
   ];
   private readonly host: string;
-  private readonly defaultGostConfig: ServiceConfig = {
-    handler: {
-      type: 'http2',
-      auther: 'auther-0',
-      limiter: 'limiter-0',
-      observer: 'observer-0',
-      metadata: {
-        enableStats: true,
-        observePeriod: '5s',
-      },
-    },
-    listener: {
-      type: 'http2',
-    },
-    observer: 'observer-0',
-    metadata: {
-      knock: 'www.google.com',
-      probeResist: 'file:/var/www/html/index.html',
-      enableStats: 'true',
-      observePeriod: '120s',
-    },
-  };
+
   constructor(
     private readonly requestService: RequestService,
     private readonly configService: ConfigService,
@@ -106,7 +86,7 @@ export class GatewayService {
       const params = {
         name: serviceData.name ? serviceData.name : `service-${defaultAddr}`,
         addr: serviceData.addr ? serviceData.addr : `:${defaultAddr}`,
-        ...this.defaultGostConfig,
+        ...DefaultGostConfig,
         ...serviceData,
       } as unknown as ServiceConfig;
       const data = await this.requestService.post<IGostReponse>(
