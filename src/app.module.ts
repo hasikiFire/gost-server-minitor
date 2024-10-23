@@ -1,5 +1,3 @@
-import { AuthModule } from './module/auth/auth.module';
-import { AuthService } from './module/auth/auth.service';
 import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/plugin/plugin.module';
@@ -21,7 +19,6 @@ import { GatewayModule } from './module/gateway/gateway.module';
 
 @Module({
   imports: [
-    AuthModule,
     GatewayModule,
     LoggerModule,
     RequestModule,
@@ -53,7 +50,6 @@ import { GatewayModule } from './module/gateway/gateway.module';
     }),
   ],
   providers: [
-    AuthService,
     MyLoggerService,
     {
       provide: APP_INTERCEPTOR,

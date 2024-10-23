@@ -164,6 +164,7 @@ export class PluginService {
               this.cacheManager.del(lKey);
               this.cacheManager.del(aKey);
               // TODO 通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~
+              // TODO 统计本 node 服务器的流量用量，用完需要改状态
             }
             v.consumedDataTransfer += tempIncrement;
             return v;

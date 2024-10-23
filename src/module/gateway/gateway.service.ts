@@ -36,6 +36,7 @@ export class GatewayService {
   }
 
   async handleRequest(method: string, params: any): Promise<any> {
+    // TODO get api key
     if (this.allowedMethods.includes(method)) {
       try {
         // 动态调用 allowedMethods 列表中的方法

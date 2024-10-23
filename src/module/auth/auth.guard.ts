@@ -7,7 +7,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-
+/**
+ * @deprecated
+ * JWT 还需要管理服务器主动调用 login，不符合本监控服务器从消息队列中取消息的场景，因此废弃
+ */
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(

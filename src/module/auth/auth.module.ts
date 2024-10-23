@@ -5,6 +5,10 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+/**
+ * @deprecated
+ * JWT 还需要管理服务器主动调用 login，不符合本监控服务器从消息队列中取消息的场景，因此废弃
+ */
 @Module({
   imports: [
     UsersModule,
