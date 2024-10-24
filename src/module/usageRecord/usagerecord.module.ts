@@ -6,9 +6,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsageRecordController } from './usagerecord.controller';
 import { UsageRecordService } from './usagerecord.service';
-import { User } from 'src/entities/User';
-import { UsageRecord } from 'src/entities/UsageRecord';
-import { PackageItem } from 'src/entities/PackageItem';
+import { User } from 'src/common/entities/User';
+import { UsageRecord } from 'src/common/entities/UsageRecord';
+import { PackageItem } from 'src/common/entities/PackageItem';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsageRecord, User, PackageItem])],

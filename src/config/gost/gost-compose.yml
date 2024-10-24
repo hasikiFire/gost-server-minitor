@@ -5,14 +5,13 @@ services:
     image: gost-server-${ENV}
     container_name: nest-app
     volumes:
-      - ./dist/config:/app/config # 假设配置文件在这个路径
+      - ./dist/config/gost:/app/config/ # 假设配置文件在这个路径
     restart: unless-stopped
   gost:
     image: gogost/gost
     container_name: gostv3
     volumes:
-      # TODO
-      - ./dist/config/config.yaml:/etc/gost/config.yaml
+      - ./dist/config/gost/config.yaml:/etc/gost/config.yaml
       - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/gost/fullchain.pem
       - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/gost/privkey.pem
     network_mode: 'host'

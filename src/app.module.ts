@@ -2,48 +2,49 @@ import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/plugin/plugin.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsageRecordModule } from './module/usageRecord/usagerecord.module';
 // import { GostService } from './module/gost/gost.service';
 import { HttpModule } from '@nestjs/axios';
 // import { UsageRecordService } from './module/usageRecord/usagerecord.service';
 // import { GostController } from './module/gost/gost.controller';
 // import { UsageRecordController } from './module/usageRecord/usagerecord.controller';
-import { GostModule } from './module/configure/configure.module';
+// import { GostModule } from './module/deprecated/configure/configure.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ReqeustInterceptor } from './common/requestInterceptor';
 import { MyLoggerService } from './common/logger/logger.service';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { GatewayModule } from './module/gateway/gateway.module';
-
+import configuration from './config/index';
+import { ConfigureModule } from './module/configure/configure.module';
 @Module({
   imports: [
     GatewayModule,
     LoggerModule,
     RequestModule,
+    ConfigureModule,
     ConfigModule.forRoot({
-      envFilePath: [
-        `.env.${process.env.NODE_ENV}`, // 根据 NODE_ENV 环境变量加载相应的 .env 文件
-        '.env', // 加载 .env 文件作为默认配置
-      ],
+      cache: true,
+      load: [configuration],
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.TYPEORM_HOST,
-      port: +process.env.TYPEORM_PORT,
-      username: process.env.TYPEORM_USERNAME,
-      password: process.env.TYPEORM_PASSWORD,
-      database: process.env.TYPEORM_DATABASE,
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        console.log('database config:', config.get('database'));
+        return {
+          ...config.get('database'),
+          autoLoadEntities: true,
+          synchronize: true,
+        } as TypeOrmModuleOptions;
+      },
       // logging: true, // 启用日志记录
     }),
     HttpModule,
     ObseverModule,
     UsageRecordModule,
-    GostModule,
     RequestModule,
     CacheModule.register({
       isGlobal: true,

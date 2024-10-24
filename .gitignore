@@ -51,3 +51,4 @@ node_modules
 
 ormconfig.json
 .env.development_local
+/src/config/dev_local.yaml

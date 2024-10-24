@@ -6,9 +6,9 @@ import {
   IEventsResponseDTO,
   ILimiterDTO,
   ILimiterRepostDTO,
-} from 'src/DTO/observerDTO';
-import { UsageRecord } from 'src/entities/UsageRecord';
-import { User } from 'src/entities/User';
+} from 'src/common/DTO/observerDTO';
+import { UsageRecord } from 'src/common/entities/UsageRecord';
+import { User } from 'src/common/entities/User';
 import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';

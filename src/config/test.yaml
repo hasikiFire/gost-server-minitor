@@ -1,0 +1,24 @@
+app:
+  port: 30000
+
+database:
+  type: mysql
+  host: localhost
+  port: 3306
+  username: root
+  password: root
+  database: test
+
+gost:
+  host: http://127.0.0.1:30001
+
+ 
+mq:
+  hostname: localhost
+  port: 5673
+  user: root
+  password: test
+
+jwt:
+  secretKey: "you_key"
+  expiresIn: ""

@@ -6,7 +6,7 @@ module.exports = {
   apps: [
     {
       name: 'gost-server-monitor',
-      script: 'dist/src/main.js',
+      script: 'dist/main.js',
       autorestart: true,
       exec_mode: 'cluster',
       watch: false,

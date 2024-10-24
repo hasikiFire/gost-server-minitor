@@ -10,9 +10,9 @@ import { MyLoggerService } from 'src/common/logger/logger.service';
 import { RequestService } from 'src/common/request/request.service';
 import { IGostReponse } from 'src/common/types/gost';
 import { Cache } from 'cache-manager';
-import { Config, ServiceConfig } from 'src/DTO/gost';
+import { Config, ServiceConfig } from 'src/common/DTO/gost';
 import { ResultData } from 'src/common/utils/result';
-import { DefaultGostConfig } from 'src/config/gostConfig';
+import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 
 @Injectable()
 export class GatewayService {
@@ -32,7 +32,7 @@ export class GatewayService {
     private readonly logger: MyLoggerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
-    this.host = this.configService.get<string>('GOST_HOST');
+    this.host = this.configService.get<string>('gost.host');
   }
 
   async handleRequest(method: string, params: any): Promise<any> {

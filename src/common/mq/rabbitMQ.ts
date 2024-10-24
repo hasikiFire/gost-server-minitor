@@ -20,6 +20,7 @@ export class RabbitMQConsumer {
   // 初始化连接和信道
   public async initialize(): Promise<boolean> {
     return new Promise((resolve, reject) => {
+      this.logger.log(['RabbitMQ'], '开始创建mq连接');
       try {
         // 创建连接
         amqp.connect(this.rabbitmqUrl, async (error0, connection) => {

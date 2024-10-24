@@ -4,9 +4,9 @@ https://docs.nestjs.com/providers#services
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PackageItem } from 'src/entities/PackageItem';
-import { UsageRecord } from 'src/entities/UsageRecord';
-import { User } from 'src/entities/User';
+import { PackageItem } from 'src/common/entities/PackageItem';
+import { UsageRecord } from 'src/common/entities/UsageRecord';
+import { User } from 'src/common/entities/User';
 import { In, Repository } from 'typeorm';
 
 @Injectable()

@@ -8,7 +8,7 @@ import {
   IAuthUser,
   IEventsResponseDTO,
   ILimiterDTO,
-} from 'src/DTO/observerDTO';
+} from 'src/common/DTO/observerDTO';
 
 @Controller('obsever')
 export class ObseverController {

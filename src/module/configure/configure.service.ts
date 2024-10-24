@@ -1,19 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { UsageRecordService } from '../usageRecord/usagerecord.service';
 import { ConfigService } from '@nestjs/config';
 import { RequestService } from 'src/common/request/request.service';
 import { MyLoggerService } from 'src/common/logger/logger.service';
 import { IGostReponse } from 'src/common/types/gost';
-import { DefaultGostConfig } from 'src/config/gostConfig';
+import { UsageRecordService } from '../usageRecord/usagerecord.service';
+import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 // 对外暴露 gost 方法-编辑套餐
 // 对内初始化 gost 数据
 
-/**
- * @deprecated
- */
 @Injectable()
 export class ConfigureService {
-  private readonly host: string;
+  private readonly gostHost: string;
   private readonly beginPort: number;
   constructor(
     private readonly configService: ConfigService,
@@ -21,8 +18,8 @@ export class ConfigureService {
     private readonly usageRecordService: UsageRecordService,
     private readonly logger: MyLoggerService,
   ) {
-    this.host = this.configService.get<string>('GOST_HOST');
-    this.beginPort = Number(this.configService.get<string>('APP_PORT')) + 2; // 前两位给 gost api 用
+    this.gostHost = this.configService.get<string>('gost.host');
+    this.beginPort = Number(this.configService.get<string>('app.host')) + 2; // 前两位给 gost api 用
   }
 
   async loadConfig() {
@@ -54,7 +51,7 @@ export class ConfigureService {
         };
         // console.log('params: ', params);
         const data = await this.requestService.post<IGostReponse>(
-          `${this.host}/api/config/services`,
+          `${this.gostHost}/api/config/services`,
           params,
         );
 
@@ -124,7 +121,7 @@ export class ConfigureService {
           limits: [`$$ ${v.speedLimit}MB ${v.speedLimit}MB`],
         };
         const data = await this.requestService.post<IGostReponse>(
-          `${this.host}/api/config/limiters`,
+          `${this.gostHost}/api/config/limiters`,
           params,
         );
 
