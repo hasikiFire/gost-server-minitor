@@ -12,7 +12,7 @@ import { User } from 'src/common/entities/User';
 import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { ICacheKey } from 'src/common/constanst';
+import { CacheKey } from 'src/common/constanst';
 
 /**
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
@@ -65,7 +65,7 @@ export class PluginService {
     const userID = data.username.split('-')?.[1] || '';
     if (!userID) return false;
 
-    const cacheKey = `${ICacheKey.AUTH}-${userID}`;
+    const cacheKey = `${CacheKey.AUTH}-${userID}`;
     const value = await this.cacheManager.get(cacheKey);
 
     if (value) {
@@ -99,7 +99,7 @@ export class PluginService {
     const userID = data.id;
     if (!userID) return { in: 0, out: 0 };
 
-    const cacheKey = `${ICacheKey.LIMITER}-${userID}`;
+    const cacheKey = `${CacheKey.LIMITER}-${userID}`;
     const value = await this.cacheManager.get<number>(cacheKey);
     if (value) {
       return { in: value, out: value };
@@ -159,8 +159,8 @@ export class PluginService {
               v.purchaseStatus = 2;
 
               // 删除本系统缓存，瞬间禁用
-              const lKey = `${ICacheKey.LIMITER}-${v.userId}`;
-              const aKey = `${ICacheKey.AUTH}-${v.userId}`;
+              const lKey = `${CacheKey.LIMITER}-${v.userId}`;
+              const aKey = `${CacheKey.AUTH}-${v.userId}`;
               this.cacheManager.del(lKey);
               this.cacheManager.del(aKey);
               // TODO 通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~

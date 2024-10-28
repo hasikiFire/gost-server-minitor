@@ -12,13 +12,19 @@ database:
 gost:
   host: http://127.0.0.1:30001
 
- 
 mq:
   hostname: localhost
   port: 5673
   user: root
   password: test
 
+# redis 配置
+redis:
+  host: 'localhost'
+  password: '123456'
+  port: 6379
+  db: 0
+  keyPrefix: ''
 # jwt:
 #   secretKey: "you_key"
 #   expiresIn: ""

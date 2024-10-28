@@ -18,6 +18,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { GatewayModule } from './module/gateway/gateway.module';
 import configuration from './config/index';
 import { ConfigureModule } from './module/configure/configure.module';
+import { RedisModule } from './module/redis/redis.module';
 @Module({
   imports: [
     GatewayModule,
@@ -33,7 +34,6 @@ import { ConfigureModule } from './module/configure/configure.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        console.log('database config:', config.get('database'));
         return {
           ...config.get('database'),
           autoLoadEntities: true,
@@ -42,6 +42,23 @@ import { ConfigureModule } from './module/configure/configure.module';
       },
       // logging: true, // 启用日志记录
     }),
+    // redis
+    RedisModule.forRootAsync(
+      {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          console.log('config.ge  ', config.get('redis'));
+          return {
+            closeClient: true,
+            readyLog: true,
+            errorLog: true,
+            config: config.get('redis'),
+          };
+        },
+      },
+      true,
+    ),
     HttpModule,
     ObseverModule,
     UsageRecordModule,

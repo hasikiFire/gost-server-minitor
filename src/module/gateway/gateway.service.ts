@@ -5,7 +5,7 @@ https://docs.nestjs.com/providers#services
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ICacheKey } from 'src/common/constanst';
+import { CacheKey } from 'src/common/constanst';
 import { MyLoggerService } from 'src/common/logger/logger.service';
 import { RequestService } from 'src/common/request/request.service';
 import { IGostReponse } from 'src/common/types/gost';
@@ -14,15 +14,19 @@ import { Config, ServiceConfig } from 'src/common/DTO/gost';
 import { ResultData } from 'src/common/utils/result';
 import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 
+/**
+ * 接受消息队列消息，调用对应方法
+ */
 @Injectable()
 export class GatewayService {
   private allowedMethods: string[] = [
     'addGostService',
     'deleteGostService',
+    'editGostService',
+
     'deleteExpiredPackage',
     'updateUserPassword',
-    'editGostService',
-    'getGostConfig',
+    'deleteUser',
   ];
   private readonly host: string;
 
@@ -36,18 +40,24 @@ export class GatewayService {
   }
 
   async handleRequest(method: string, params: any): Promise<any> {
-    // TODO get api key
     if (this.allowedMethods.includes(method)) {
       try {
         // 动态调用 allowedMethods 列表中的方法
-        return await this[method](params);
+        await this[method](params);
+        this.logger.log('[GatewayService] handleRequest success');
       } catch (error) {
-        throw new Error(
-          `Error invoking method: ${method}, details: ${error.message}`,
+        this.logger.error(
+          `[GatewayService] handleRequest error. invoking method: ${method}, error:`,
+          error,
         );
+        // throw new Error(
+        //   `Error invoking method: ${method}, details: ${error.message}`,
+        // );
       }
     } else {
-      throw new Error(`Method ${method} is not allowed or does not exist.`);
+      this.logger.error(
+        `[GatewayService] handleRequest error. Method ${method} is not allowed or does not exist.`,
+      );
     }
   }
 
@@ -108,7 +118,7 @@ export class GatewayService {
    * 删除套餐
    * 请求 GOST API 并删除指定的服务
    */
-  async deleteGostService(serviceId: string) {
+  async deleteGostService({ serviceId }: { serviceId: string }) {
     try {
       const data = await this.requestService.delete<IGostReponse>(
         `${this.host}/api/config/services/${serviceId}`,
@@ -154,7 +164,7 @@ export class GatewayService {
    * @param userId
    * @returns
    */
-  async updateUserPassword(userId: string) {
+  async updateUserPassword({ userId }: { userId: string }) {
     try {
       await this.deleteUserCache(userId);
       return ResultData.ok();
@@ -165,8 +175,8 @@ export class GatewayService {
 
   private deleteUserCache(userID: string) {
     try {
-      const lKey = `${ICacheKey.LIMITER}-${userID}`;
-      const aKey = `${ICacheKey.AUTH}-${userID}`;
+      const lKey = `${CacheKey.LIMITER}-${userID}`;
+      const aKey = `${CacheKey.AUTH}-${userID}`;
       this.cacheManager.del(lKey);
       this.cacheManager.del(aKey);
     } catch (error) {
