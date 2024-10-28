@@ -19,6 +19,6 @@ mq:
   user: root
   password: test
 
-jwt:
-  secretKey: "you_key"
-  expiresIn: ""
+# jwt:
+#   secretKey: "you_key"
+#   expiresIn: ""
