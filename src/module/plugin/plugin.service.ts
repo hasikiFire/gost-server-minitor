@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CacheKey } from 'src/common/constanst';
+import { RabbitMQService } from '../rabbitMQ/rabbitmq.service';
 
 /**
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
@@ -20,14 +21,16 @@ import { CacheKey } from 'src/common/constanst';
 @Injectable()
 export class PluginService {
   private userTotalBytes: { [k: string]: number } = {};
+  private serverTotalBytes: number = 0;
 
   constructor(
     @InjectRepository(UsageRecord)
     private readonly usageRecordRepository: Repository<UsageRecord>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly logger: MyLoggerService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly logger: MyLoggerService,
+    private readonly rabbitMQService: RabbitMQService,
   ) {}
 
   /**
@@ -58,6 +61,7 @@ export class PluginService {
     });
 
     this.updateRecordsWithLock(incrementMap);
+    this.updateServeWithLock(incrementMap);
   }
 
   async auth(data: IAuthUser) {
@@ -163,8 +167,14 @@ export class PluginService {
               const aKey = `${CacheKey.AUTH}-${v.userId}`;
               this.cacheManager.del(lKey);
               this.cacheManager.del(aKey);
-              // TODO 通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~
-              // TODO 统计本 node 服务器的流量用量，用完需要改状态
+              //  通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~
+              // TODO 待测试
+              this.rabbitMQService.sendMessageToExchange({
+                method: 'deleteUser',
+                params: {
+                  userID: v.userId,
+                },
+              });
             }
             v.consumedDataTransfer += tempIncrement;
             return v;
@@ -179,5 +189,14 @@ export class PluginService {
     } catch (e) {
       this.logger.error('[pluginService][listenGost]  update records faild', e);
     }
+  }
+
+  async updateServeWithLock(incrementMap: Record<number, number>) {
+    // 统计本 node 服务器的流量用量，用完需要改状态
+    const allBytes = Object.keys(incrementMap).reduce(
+      (pre, cur) => pre + incrementMap[cur],
+      0,
+    );
+    console.log('allBytes: ', allBytes);
   }
 }

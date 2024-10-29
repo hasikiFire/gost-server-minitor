@@ -1,3 +1,4 @@
+import { RabbitMQModule } from './module/rabbitMQ/rabbitmq.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { RequestModule } from './common/request/request.module';
 import { ObseverModule } from './module/plugin/plugin.module';
@@ -21,6 +22,7 @@ import { ConfigureModule } from './module/configure/configure.module';
 import { RedisModule } from './module/redis/redis.module';
 @Module({
   imports: [
+    RabbitMQModule,
     GatewayModule,
     LoggerModule,
     RequestModule,
@@ -42,13 +44,11 @@ import { RedisModule } from './module/redis/redis.module';
       },
       // logging: true, // 启用日志记录
     }),
-    // redis
     RedisModule.forRootAsync(
       {
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
-          console.log('config.ge  ', config.get('redis'));
           return {
             closeClient: true,
             readyLog: true,

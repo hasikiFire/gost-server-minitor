@@ -19,7 +19,6 @@ export class UsageRecord {
   @Column('bigint', { name: 'user_id', comment: '用户ID' })
   userId: string;
 
-  // TODO 需要等待 gost 添加完用户，在本系统才更新数据库
   @Column('int', {
     name: 'purchase_status',
     comment: '套餐状态 0:未开始 1：生效中 2：流量已用尽 3：已过期 ',

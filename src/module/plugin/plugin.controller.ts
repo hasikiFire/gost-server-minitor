@@ -29,13 +29,8 @@ export class ObseverController {
     return this.pluginService.limiter(data);
   }
 
-  // reset cache
   @Post('reset')
   async resetObseverCache(@Body() data: ILimiterDTO) {
-    // TODO 重置缓存，每日晚上0点。场景：用户更换套餐，套餐速率不同：limiter
     return this.pluginService.limiter(data);
   }
-
-  // TODO get RabbitMQ ?
-  // RabbitMQ
 }

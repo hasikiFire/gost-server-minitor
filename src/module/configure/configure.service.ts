@@ -20,6 +20,7 @@ export class ConfigureService {
   ) {
     this.gostHost = this.configService.get<string>('gost.host');
     this.beginPort = Number(this.configService.get<string>('app.host')) + 2; // 前两位给 gost api 用
+    this.loadConfig();
   }
 
   async loadConfig() {
