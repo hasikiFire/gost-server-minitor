@@ -31,6 +31,8 @@ chmod 755 $LOCAL_PATH
 echo "克隆仓库..."
 git clone $REPO_URL $LOCAL_PATH
 
+
+# TODO 改成复制 yaml 
 echo "复制 .env.production "
 cp -f .env.production "$LOCAL_PATH/.env.production"
 
