@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RequestService } from 'src/common/request/request.service';
-import { MyLoggerService } from 'src/common/logger/logger.service';
-import { IGostReponse } from 'src/common/types/gost';
+import { RequestService } from 'src/module/help/request/request.service';
+import { MyLoggerService } from 'src/module/help/logger/logger.service';
+import { IGostReponse } from 'types/gost';
 import { UsageRecordService } from '../usageRecord/usagerecord.service';
 import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 // 对外暴露 gost 方法-编辑套餐

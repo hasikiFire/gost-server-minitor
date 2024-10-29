@@ -1,6 +1,5 @@
-import { RabbitMQModule } from './module/rabbitMQ/rabbitmq.module';
-import { LoggerModule } from './common/logger/logger.module';
-import { RequestModule } from './common/request/request.module';
+import { LoggerModule } from './module/help/logger/logger.module';
+import { RequestModule } from './module/help/request/request.module';
 import { ObseverModule } from './module/plugin/plugin.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -13,13 +12,14 @@ import { HttpModule } from '@nestjs/axios';
 // import { UsageRecordController } from './module/usageRecord/usagerecord.controller';
 // import { GostModule } from './module/deprecated/configure/configure.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ReqeustInterceptor } from './common/requestInterceptor';
-import { MyLoggerService } from './common/logger/logger.service';
+import { ReqeustInterceptor } from './common/interceptor/requestInterceptor';
+import { MyLoggerService } from './module/help/logger/logger.service';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { GatewayModule } from './module/gateway/gateway.module';
 import configuration from './config/index';
 import { ConfigureModule } from './module/configure/configure.module';
-import { RedisModule } from './module/redis/redis.module';
+import { RedisModule } from './module/help/redis/redis.module';
+import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
 @Module({
   imports: [
     RabbitMQModule,
@@ -38,6 +38,7 @@ import { RedisModule } from './module/redis/redis.module';
       useFactory: (config: ConfigService) => {
         return {
           ...config.get('database'),
+          entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
           synchronize: true,
         } as TypeOrmModuleOptions;

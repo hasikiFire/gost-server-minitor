@@ -74,6 +74,9 @@ importers:
       swagger-ui-express:
         specifier: ^5.0.1
         version: 5.0.1(express@4.19.2)
+      systeminformation:
+        specifier: ^5.23.5
+        version: 5.23.5
       typeorm:
         specifier: ^0.3.20
         version: 0.3.20(ioredis@5.4.1)(mysql2@3.11.0)(ts-node@10.9.2(@types/node@20.14.14)(typescript@5.5.4))
@@ -3050,6 +3053,12 @@ packages:
   synckit@0.9.1:
     resolution: {integrity: sha512-7gr8p9TQP6RAHusBOSLs46F4564ZrjV8xFmw5zCmgmhGUcw2hxsShhJ6CEiHQMgPDwAQ1fWHPM0ypc4RMAig4A==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  systeminformation@5.23.5:
+    resolution: {integrity: sha512-PEpJwhRYxZgBCAlWZhWIgfMTjXLqfcaZ1pJsJn9snWNfBW/Z1YQg1mbIUSWrEV3ErAHF7l/OoVLQeaZDlPzkpA==}
+    engines: {node: '>=8.0.0'}
+    os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
+    hasBin: true
 
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
@@ -6472,6 +6481,7 @@ snapshots:
       cache-manager: 5.7.6
       cross-env: 7.0.3
       ioredis: 5.4.1
+      js-yaml: 4.1.0
       mysql2: 3.11.0
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
@@ -6857,6 +6867,8 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
+
+  systeminformation@5.23.5: {}
 
   tapable@2.2.1: {}
 

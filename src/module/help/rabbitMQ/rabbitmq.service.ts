@@ -4,13 +4,13 @@ https://docs.nestjs.com/providers#services
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisInstanceService } from 'src/module/redis/redis.service';
+import { RedisInstanceService } from 'src/module/help/redis/redis.service';
 
 import { Channel, Connection } from 'amqplib';
 import * as amqp from 'amqplib/callback_api';
 import { GatewayService } from 'src/module/gateway/gateway.service';
-import { MyLoggerService } from 'src/common/logger/logger.service';
-import { RabbitMqConfig, RedisCache } from 'src/common/constanst';
+import { MyLoggerService } from 'src/module/help/logger/logger.service';
+import { RabbitMqConfig, RedisCache } from 'src/common/constanst/constanst';
 
 @Injectable()
 export class RabbitMQService {

@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MyLoggerService } from 'src/common/logger/logger.service';
+import { MyLoggerService } from 'src/module/help/logger/logger.service';
 import {
   IAuthUser,
   IEventsResponseDTO,
   ILimiterDTO,
   ILimiterRepostDTO,
-} from 'src/common/DTO/observerDTO';
+} from 'src/common/dto/observerDTO';
 import { UsageRecord } from 'src/common/entities/UsageRecord';
 import { User } from 'src/common/entities/User';
 import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { CacheKey } from 'src/common/constanst';
-import { RabbitMQService } from '../rabbitMQ/rabbitmq.service';
+import { CacheKey } from 'src/common/constanst/constanst';
+import { RabbitMQService } from '../help/rabbitMQ/rabbitmq.service';
 
 /**
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志

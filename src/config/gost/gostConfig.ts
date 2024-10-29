@@ -1,4 +1,4 @@
-import { ServiceConfig } from 'src/common/DTO/gost';
+import { ServiceConfig } from 'src/common/dto/gost';
 
 export const DefaultGostConfig: ServiceConfig = {
   handler: {

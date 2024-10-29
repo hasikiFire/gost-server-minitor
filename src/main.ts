@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { setupSwagger } from 'src/config/swagger/swagger.config';
 import { ConfigureService } from 'src/module/configure/configure.service';
-import { ReqeustInterceptor } from 'src/common/requestInterceptor';
+import { ReqeustInterceptor } from 'src/common/interceptor/requestInterceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

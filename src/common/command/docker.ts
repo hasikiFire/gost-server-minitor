@@ -4,6 +4,11 @@ import * as path from 'path';
 
 const execPromise = promisify(exec);
 
+/**
+ * @deprecated
+ *
+ * 用 docker-compose启动，不再用命令行
+ */
 export class DockerCommand {
   private readonly composeFilePath = path.join(
     __dirname,
