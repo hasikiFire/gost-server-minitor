@@ -16,7 +16,16 @@ export class ServerService {
     private readonly foreignServerRepository: Repository<ForeignServer>,
 
     private readonly logger: MyLoggerService,
-  ) {}
+  ) {
+    this.initServer();
+  }
+
+  /**
+   * 加载服务器数据到数据库
+   */
+  async initServer() {
+    // TODO
+  }
 
   /**
    *  统计本 node 服务器的流量用量

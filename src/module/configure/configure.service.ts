@@ -5,6 +5,7 @@ import { MyLoggerService } from 'src/module/help/logger/logger.service';
 import { IGostReponse } from 'types/gost';
 import { UsageRecordService } from '../usageRecord/usagerecord.service';
 import { DefaultGostConfig } from 'src/config/gost/gostConfig';
+import { ServerService } from '../server/server.service';
 
 // 对外暴露 gost 方法-编辑套餐
 // 对内初始化 gost 数据
@@ -17,19 +18,12 @@ export class ConfigureService {
     private readonly requestService: RequestService,
     private readonly usageRecordService: UsageRecordService,
     private readonly logger: MyLoggerService,
+    private readonly serverService: ServerService,
   ) {
     this.gostHost = this.configService.get<string>('gost.host');
     this.beginPort = Number(this.configService.get<string>('app.host')) + 2; // 前两位给 gost api 用
 
-    this.initServer();
     this.loadConfig();
-  }
-
-  /**
-   * 加载服务器数据到数据库
-   */
-  async initServer() {
-    // TODO
   }
 
   async loadConfig() {
