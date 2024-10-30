@@ -13,7 +13,8 @@ import { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CacheKey } from 'src/common/constanst/constanst';
-import { RabbitMQService } from '../help/rabbitMQ/rabbitmq.service';
+import { UsageRecordService } from '../usageRecord/usagerecord.service';
+import { ServerService } from '../server/server.service';
 
 /**
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
@@ -21,16 +22,17 @@ import { RabbitMQService } from '../help/rabbitMQ/rabbitmq.service';
 @Injectable()
 export class PluginService {
   private userTotalBytes: { [k: string]: number } = {};
-  private serverTotalBytes: number = 0;
-
   constructor(
     @InjectRepository(UsageRecord)
     private readonly usageRecordRepository: Repository<UsageRecord>,
+
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+
     private readonly logger: MyLoggerService,
-    private readonly rabbitMQService: RabbitMQService,
+    private readonly usageRecordService: UsageRecordService,
+    private readonly serverService: ServerService,
   ) {}
 
   /**
@@ -60,8 +62,8 @@ export class PluginService {
       incrementMap[userID] = incrementMap[userID] + increment;
     });
 
-    this.updateRecordsWithLock(incrementMap);
-    this.updateServeWithLock(incrementMap);
+    this.serverService.updateServeWithLock(incrementMap);
+    this.usageRecordService.updateRecordsWithLock(incrementMap);
   }
 
   async auth(data: IAuthUser) {
@@ -133,70 +135,5 @@ export class PluginService {
     return { in: limitNum, out: limitNum };
 
     // TODO 网站过滤在此做？
-  }
-
-  /**
-   * 会有死锁？
-   * 死锁：事务 A 先锁定行 1，等待锁定行 2；事务 B 先锁定行 2，然后等待锁定行 1，最终两者相互等待，导致死锁
-   * 分布式系统非常大概率会出现死锁！因为都是批量更新 usage_record 的场景！
-   * 解决方法： 1. 对一个表而言，应尽量以固定的顺序存取表中的行
-   * @param incrementMap
-   */
-  async updateRecordsWithLock(incrementMap: Record<number, number>) {
-    const userIds = Object.keys(incrementMap).sort(); // 固定的顺序存取表中的行，这样只会发生锁的阻塞等待
-    try {
-      await this.usageRecordRepository.manager.transaction(
-        async (transactionalEntityManager) => {
-          let records = await transactionalEntityManager
-            .createQueryBuilder(UsageRecord, 'usage_record')
-            .setLock('pessimistic_write') // 行级锁
-            .where('usage_record.userId IN (:...ids)', { ids: userIds })
-            .getMany();
-
-          records = records.map((v) => {
-            const tempIncrement = Math.round(
-              (incrementMap[v.userId] || 0) / 1024,
-            );
-            const gb = Math.round(tempIncrement / 1024 / 1024 / 1024);
-            // 使用流量到达限制
-            if (gb >= v.dataAllowance) {
-              v.purchaseStatus = 2;
-
-              // 删除本系统缓存，瞬间禁用
-              const lKey = `${CacheKey.LIMITER}-${v.userId}`;
-              const aKey = `${CacheKey.AUTH}-${v.userId}`;
-              this.cacheManager.del(lKey);
-              this.cacheManager.del(aKey);
-              //  通知其他 node 服务器也删除，避免用户切换服务器暂时还能用~~
-              // TODO 待测试
-              this.rabbitMQService.sendMessageToExchange({
-                method: 'deleteUser',
-                params: {
-                  userID: v.userId,
-                },
-              });
-            }
-            v.consumedDataTransfer += tempIncrement;
-            return v;
-          });
-
-          await transactionalEntityManager.save(records);
-          this.logger.log(
-            '[pluginService][listenGost]  update records success',
-          );
-        },
-      );
-    } catch (e) {
-      this.logger.error('[pluginService][listenGost]  update records faild', e);
-    }
-  }
-
-  async updateServeWithLock(incrementMap: Record<number, number>) {
-    // 统计本 node 服务器的流量用量，用完需要改状态
-    const allBytes = Object.keys(incrementMap).reduce(
-      (pre, cur) => pre + incrementMap[cur],
-      0,
-    );
-    console.log('allBytes: ', allBytes);
   }
 }

@@ -1,6 +1,7 @@
+import { ServerModule } from './module/server/server.module';
 import { LoggerModule } from './module/help/logger/logger.module';
 import { RequestModule } from './module/help/request/request.module';
-import { ObseverModule } from './module/plugin/plugin.module';
+import { PluginModule } from './module/plugin/plugin.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -22,6 +23,7 @@ import { RedisModule } from './module/help/redis/redis.module';
 import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
 @Module({
   imports: [
+    ServerModule,
     RabbitMQModule,
     GatewayModule,
     LoggerModule,
@@ -61,7 +63,7 @@ import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
       true,
     ),
     HttpModule,
-    ObseverModule,
+    PluginModule,
     UsageRecordModule,
     RequestModule,
     CacheModule.register({
