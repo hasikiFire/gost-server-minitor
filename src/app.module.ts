@@ -21,8 +21,12 @@ import configuration from './config/index';
 import { ConfigureModule } from './module/configure/configure.module';
 import { RedisModule } from './module/help/redis/redis.module';
 import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
+
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ServerModule,
     RabbitMQModule,
     GatewayModule,
@@ -42,7 +46,7 @@ import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
           ...config.get('database'),
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
-          synchronize: true,
+          synchronize: true, // 生产禁用!! 同步更改数据库表！
         } as TypeOrmModuleOptions;
       },
       // logging: true, // 启用日志记录

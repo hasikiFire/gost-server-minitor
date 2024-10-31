@@ -1,6 +1,6 @@
 import * as systeminformation from 'systeminformation';
 
-class NetworkInfo {
+class SystemInfo {
   async getIPAddresses(): Promise<string[]> {
     try {
       const networkData = await systeminformation.networkInterfaces();
@@ -16,7 +16,51 @@ class NetworkInfo {
       return ipAddresses;
     } catch (error) {
       console.error('获取 IP 地址时出错:', error);
-      throw new Error('无法获取 IP 地址');
+    }
+  }
+
+  async getMemoryInfo() {
+    try {
+      const memoryData = await systeminformation.mem();
+      return memoryData;
+    } catch (error) {
+      console.error('获取 内存信息时出错:', error);
+    }
+  }
+
+  async getCpuInfo() {
+    try {
+      const cpuData = await systeminformation.cpu();
+      return cpuData;
+    } catch (error) {
+      console.error('获取 CPU 信息时出错:', error);
+    }
+  }
+
+  async getDiskInfo() {
+    try {
+      const diskData = await systeminformation.fsSize();
+      return diskData;
+    } catch (error) {
+      console.error('获取 磁盘信息时出错:', error);
+    }
+  }
+
+  async getUptime() {
+    try {
+      const uptimeData = await systeminformation.time();
+      return uptimeData;
+    } catch (error) {
+      console.error('获取 运行时间时出错:', error);
+    }
+  }
+
+  async getSystemInfo() {
+    try {
+      const systemData = await systeminformation.system();
+      return systemData;
+    } catch (error) {
+      console.error('获取 系统信息时出错:', error);
     }
   }
   // 检查 IP 地址是否为私有地址
@@ -31,9 +75,9 @@ class NetworkInfo {
 }
 
 // 使用示例
-const networkInfo = new NetworkInfo();
-export default networkInfo;
-// networkInfo
+const systemInfo = new SystemInfo();
+export default systemInfo;
+// SystemInfo
 //   .getIPAddresses()
 //   .then((ipAddresses) => {
 //     console.log('IP 地址:', ipAddresses);

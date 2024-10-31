@@ -107,7 +107,7 @@ export class ForeignServer {
 
   @Column('int', {
     name: 'status',
-    comment: '服务器的状态。 1：活动，2：已暂停',
+    comment: '服务器的状态。0: 停止 1：活动，2：过期',
   })
   status: number;
 
