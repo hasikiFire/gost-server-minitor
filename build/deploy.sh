@@ -16,6 +16,7 @@ CONTAINER_NAME="gost-server-$ENV"
 # 定义 GitHub 仓库 URL 和本地路径
 REPO_URL="https://github.com/hasikiFire/gost-server-minitor.git"
 LOCAL_PATH="$ENV"
+CONFIG_PATH="$ENV/src/config"
 
 # 检查环境参数是否有效
 if [[ "$ENV" != "test" && "$ENV" != "main" ]]; then
@@ -31,10 +32,9 @@ chmod 755 $LOCAL_PATH
 echo "克隆仓库..."
 git clone $REPO_URL $LOCAL_PATH
 
-
-# TODO 改成复制 yaml 
-echo "复制 .env.production "
-cp -f .env.production "$LOCAL_PATH/.env.production"
+ 
+echo "复制 prod.yaml "
+cp -f prod.yaml "$CONFIG_PATH/prod.yaml"
 
 cd $LOCAL_PATH
 # 切换到指定分支
