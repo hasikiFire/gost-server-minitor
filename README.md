@@ -1,6 +1,10 @@
 # dev
 
-http://localhost:30000/api
+pnpm run dev
+pnpm run start
+
+预览：http://localhost:30000/api
+
 
 # gost-monitor
 
