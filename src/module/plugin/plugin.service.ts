@@ -6,7 +6,7 @@ import {
   IEventsResponseDTO,
   ILimiterDTO,
   ILimiterRepostDTO,
-} from 'src/common/dto/observerDTO';
+} from 'src/common/DTO/observerDTO';
 import { UsageRecord } from 'src/common/entities/UsageRecord';
 import { User } from 'src/common/entities/User';
 import { Repository } from 'typeorm';

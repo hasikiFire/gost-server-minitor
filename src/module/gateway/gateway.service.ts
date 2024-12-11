@@ -10,7 +10,7 @@ import { MyLoggerService } from 'src/module/help/logger/logger.service';
 import { RequestService } from 'src/module/help/request/request.service';
 import { IGostReponse } from 'types/gost';
 import { Cache } from 'cache-manager';
-import { Config, ServiceConfig } from 'src/common/dto/gost';
+import { Config, ServiceConfig } from 'src/common/DTO/gost';
 import { ResultData } from 'src/common/utils/result';
 import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 
