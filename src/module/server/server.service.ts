@@ -46,7 +46,7 @@ export class ServerService {
     this.logger.log('[serverService] initServerStatus success!!');
   }
 
-  @Cron('*/1 * * * *')
+  // @Cron('*/1 * * * *')
   async refreshServerStatus() {
     this.logger.debug('[serverService] Updating server status...');
 
