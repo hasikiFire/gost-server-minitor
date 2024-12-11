@@ -46,7 +46,6 @@ import { ScheduleModule } from '@nestjs/schedule';
           ...config.get('database'),
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
-          synchronize: true, // 生产禁用!! 同步更改数据库表！
         } as TypeOrmModuleOptions;
       },
       // logging: true, // 启用日志记录

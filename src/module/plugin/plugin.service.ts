@@ -97,11 +97,18 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-    if (!hasValidRecord) return false;
+    if (!hasValidRecord) {
+      this.logger.log(
+        '[plugin][auth] 找不到套餐/套餐非生效中, userID: ',
+        userID,
+      );
+      return false;
+    }
     return { ok: true, id: userID };
   }
 
   async limiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
+    this.logger.log('[plugin][getLimiter]   data.id: ', data.id);
     const userID = data.id;
     if (!userID) return { in: 0, out: 0 };
 
@@ -117,7 +124,7 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-
+    this.logger.log('[plugin][getLimiter]  套餐生效中, record: ', userID);
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
         '[plugin][getLimiter] 找不到套餐/套餐非生效中, userID: ',

@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Index('user_id', ['userId'], { unique: true })
+@Index('uuid', ['userId'], { unique: true })
 @Entity('user', { schema: 'shop_test' })
 export class User {
   @PrimaryGeneratedColumn({
@@ -11,7 +11,7 @@ export class User {
   })
   id: string;
 
-  @Column('bigint', { name: 'user_id', unique: true, comment: '用户ID' })
+  @Column('bigint', { name: 'uuid', unique: true, comment: '用户ID' })
   userId: string;
 
   @Column('varchar', { name: 'name', comment: '名字', length: 255 })
