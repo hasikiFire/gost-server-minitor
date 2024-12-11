@@ -67,6 +67,7 @@ export class PluginService {
   }
 
   async auth(data: IAuthUser) {
+    this.logger.log('[plugin][auth]  data: ', data.username);
     if (!data) return false;
     const userID = data.username.split('-')?.[1] || '';
     if (!userID) return false;
@@ -89,7 +90,10 @@ export class PluginService {
         status: 1,
       },
     });
-    if (!user) return false;
+    if (!user) {
+      this.logger.log('[plugin][auth] 找不到用户, userID: ', userID);
+      return false;
+    }
     // 找到有效的使用记录
     const hasValidRecord = await this.usageRecordRepository.findOne({
       where: {
