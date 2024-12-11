@@ -4,7 +4,7 @@ class SystemInfo {
   async getIPAddresses(): Promise<string[]> {
     try {
       const networkData = await systeminformation.networkInterfaces();
-      console.error('获取 IP 地址时出错:', networkData);
+      console.error('获取 IP 地址networkData:', networkData);
       // 确保 networkData 是数组
       const interfaces = Array.isArray(networkData)
         ? networkData

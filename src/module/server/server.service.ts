@@ -19,13 +19,14 @@ export class ServerService {
 
     private readonly logger: MyLoggerService,
   ) {
-    this.initServerStatus();
+    // this.initServerStatus();
   }
 
   /**
    * 加载服务器数据到数据库
    */
   async initServerStatus() {
+    // TODO 获取不到外网地址，改成其他方案
     const ip4s = await SystemInfo.getIPAddresses();
     this.ip4 = ip4s.length ? ip4s[0] : '';
     this.logger.log('[serverService] initServerStatus server ip: ', this.ip4);
@@ -46,7 +47,7 @@ export class ServerService {
     this.logger.log('[serverService] initServerStatus success!!');
   }
 
-  // @Cron('*/1 * * * *')
+  @Cron('*/1 * * * *')
   async refreshServerStatus() {
     this.logger.debug('[serverService] Updating server status...');
 
