@@ -81,9 +81,6 @@ export class PluginService {
     if (value) {
       this.logger.log('[plugin][auth] 获取到缓存 ', userID);
       return { ok: true, id: userID };
-    } else {
-      // 缓存6h
-      await this.cacheManager.set(cacheKey, data.username, 6 * 60 * 60 * 1000);
     }
 
     const user = await this.userRepository.findOne({
@@ -113,6 +110,8 @@ export class PluginService {
       return false;
     }
     this.logger.log('[plugin][auth] 用户校验通过, userID: ', userID);
+    // 缓存6h
+    await this.cacheManager.set(cacheKey, data.username, 6 * 60 * 60 * 1000);
     return { ok: true, id: userID };
   }
 
