@@ -10,8 +10,8 @@ import {
   ILimiterDTO,
 } from 'src/common/DTO/observerDTO';
 
-@Controller('obsever')
-export class ObseverController {
+@Controller('plugin')
+export class PluginController {
   constructor(private readonly pluginService: PluginService) {}
 
   @Post('observer')

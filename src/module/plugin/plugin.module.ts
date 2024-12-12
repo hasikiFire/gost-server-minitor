@@ -3,7 +3,7 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
-import { ObseverController } from './plugin.controller';
+import { PluginController } from './plugin.controller';
 import { PluginService } from './plugin.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsageRecord } from 'src/common/entities/UsageRecord';
@@ -19,7 +19,7 @@ import { ServerModule } from '../server/server.module';
     UsageRecordModule,
     ServerModule,
   ],
-  controllers: [ObseverController],
+  controllers: [PluginController],
   providers: [PluginService],
 })
 export class PluginModule {}

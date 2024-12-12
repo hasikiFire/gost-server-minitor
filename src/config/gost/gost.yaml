@@ -2,24 +2,24 @@
 # 动态配置，每个用户都起一个  service(暂时)
 # 通过 service 区分不同用户
 services:
-  - name: service-30002
-    addr: :30002
-    # observer: observer-0 # 服务上的观测器
-    handler:
-      type: http2
-      auther: auther-0
-      limiter: limiter-0
-      observer: observer-0 # handler 上的观测器
-      metadata:
-        enableStats: true # 开启统计
-        observePeriod: 5s
-    listener:
-      type: http2
+- name: service-30002
+  addr: :30002
+  # observer: observer-0 # 服务上的观测器
+  handler:
+    type: http2
+    auther: auther-0
+    limiter: limiter-0
+    observer: observer-0 # handler 上的观测器
     metadata:
-      knock: www.google.com
-      probeResist: file:/var/www/html/index.html
       enableStats: true # 开启统计
       observePeriod: 5s
+  listener:
+    type: http2
+  metadata:
+    knock: www.google.com
+    probeResist: file:/var/www/html/index.html
+    enableStats: true # 开启统计
+    observePeriod: 5s
 
 tls:
   certFile: /etc/gost/fullchain.pem
@@ -27,25 +27,25 @@ tls:
 
 # 固定值，接口观测
 observers:
-  - name: observer-0
-    plugin:
-      type: http
-      addr: http://127.0.0.1:30000/observer
-      timeout: 10s
+- name: observer-0
+  plugin:
+    type: http
+    addr: http://127.0.0.1:30000/plugin/observer
+    timeout: 10s
 
 # 固定值，接口观测
 authers:
-  - name: auther-0
-    plugin:
-      type: http
-      addr: http://127.0.0.1:30000/auth
+- name: auther-0
+  plugin:
+    type: http
+    addr: http://127.0.0.1:30000/plugin/auth
 
 # 固定值，接口观测
 limiters:
-  - name: limiter-0
-    plugin:
-      type: http
-      addr: http://127.0.0.1:30000/limiter
+- name: limiter-0
+  plugin:
+    type: http
+    addr: http://127.0.0.1:30000/plugin/limiter
 
 api:
   addr: 0.0.0.0:30001
