@@ -69,7 +69,7 @@ export class PluginService {
   async auth(data: IAuthUser) {
     this.logger.log('[plugin][auth]  data: ', data.username);
     if (!data) return false;
-    const userID = data.username.split('-')?.[1] || '';
+    const userID = data.username || '';
     if (!userID) {
       this.logger.error('[plugin][auth] data.username 获取不到用户ID ', userID);
       return false;
@@ -80,7 +80,7 @@ export class PluginService {
 
     if (value) {
       this.logger.log('[plugin][auth] 获取到缓存 ', userID);
-      return { ok: true, id: data.username };
+      return { ok: true, id: userID };
     } else {
       // 缓存6h
       await this.cacheManager.set(cacheKey, data.username, 6 * 60 * 60 * 1000);
