@@ -134,10 +134,10 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-    this.logger.log('[plugin][getLimiter]  套餐生效中, record: ', userID);
+    this.logger.log('[plugin][limiter]  套餐生效中, record: ', userID);
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
-        '[plugin][getLimiter] 找不到套餐/套餐非生效中, userID: ',
+        '[plugin][limiter] 找不到套餐/套餐非生效中, userID: ',
         userID,
       );
       return { in: 0, out: 0 };
@@ -148,7 +148,7 @@ export class PluginService {
 
     // 缓存6h
     await this.cacheManager.set(cacheKey, limitNum, 1 * 60 * 60 * 1000);
-    this.logger.log('[plugin][auth] 用户校验通过, userID: ', String(limitNum));
+    this.logger.log('[plugin][limiter] 用户校验通过, 速率: ', String(limitNum));
     return { in: limitNum, out: limitNum };
 
     // TODO 网站过滤在此做？
