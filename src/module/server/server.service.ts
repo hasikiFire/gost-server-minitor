@@ -8,7 +8,7 @@ import { ForeignServer } from 'src/common/entities/ForeignServer';
 import SystemInfo from 'src/common/os/SystemInfo';
 import { Repository } from 'typeorm';
 import { MyLoggerService } from '../help/logger/logger.service';
-import { Cron } from '@nestjs/schedule';
+// import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class ServerService {
@@ -47,7 +47,7 @@ export class ServerService {
     this.logger.log('[serverService] initServerStatus success!!');
   }
 
-  @Cron('*/1 * * * *')
+  // @Cron('*/1 * * * *')
   async refreshServerStatus() {
     this.logger.debug('[serverService] Updating server status...');
 

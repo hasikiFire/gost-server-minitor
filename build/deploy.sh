@@ -10,11 +10,11 @@ ENV=${1:-main} # 默认环境为 main
 BRANCH_NAME=$ENV
 
 # 定义 Docker 镜像和容器名称
-IMAGE_NAME="hasikifire/gost-server-$ENV"
-CONTAINER_NAME="gost-server-$ENV"
+IMAGE_NAME="hasikifire/network-mall-gost-$ENV"
+CONTAINER_NAME="network-mall-gost-$ENV"
 
 # 定义 GitHub 仓库 URL 和本地路径
-REPO_URL="https://github.com/hasikiFire/gost-server-minitor.git"
+REPO_URL="https://github.com/hasikiFire/network-mall-gost.git"
 LOCAL_PATH="$ENV"
 CONFIG_PATH="$ENV/src/config"
 

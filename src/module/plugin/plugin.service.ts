@@ -70,12 +70,16 @@ export class PluginService {
     this.logger.log('[plugin][auth]  data: ', data.username);
     if (!data) return false;
     const userID = data.username.split('-')?.[1] || '';
-    if (!userID) return false;
+    if (!userID) {
+      this.logger.error('[plugin][auth] data.username 获取不到用户ID ', userID);
+      return false;
+    }
 
     const cacheKey = `${CacheKey.AUTH}-${userID}`;
     const value = await this.cacheManager.get(cacheKey);
 
     if (value) {
+      this.logger.log('[plugin][auth] 获取到缓存 ', userID);
       return { ok: true, id: data.username };
     } else {
       // 缓存6h
@@ -91,7 +95,7 @@ export class PluginService {
       },
     });
     if (!user) {
-      this.logger.log('[plugin][auth] 找不到用户, userID: ', userID);
+      this.logger.error('[plugin][auth] 找不到用户, userID: ', userID);
       return false;
     }
     // 找到有效的使用记录
@@ -108,17 +112,19 @@ export class PluginService {
       );
       return false;
     }
+    this.logger.log('[plugin][auth] 用户校验通过, userID: ', userID);
     return { ok: true, id: userID };
   }
 
   async limiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
-    this.logger.log('[plugin][getLimiter]   data.id: ', data.id);
+    this.logger.log('[plugin][limiter] userID: ', data.id);
     const userID = data.id;
     if (!userID) return { in: 0, out: 0 };
 
     const cacheKey = `${CacheKey.LIMITER}-${userID}`;
     const value = await this.cacheManager.get<number>(cacheKey);
     if (value) {
+      this.logger.log('[plugin][limiter] 获取到缓存 ', cacheKey);
       return { in: value, out: value };
     }
 
@@ -142,7 +148,7 @@ export class PluginService {
 
     // 缓存6h
     await this.cacheManager.set(cacheKey, limitNum, 1 * 60 * 60 * 1000);
-
+    this.logger.log('[plugin][auth] 用户校验通过, userID: ', String(limitNum));
     return { in: limitNum, out: limitNum };
 
     // TODO 网站过滤在此做？
