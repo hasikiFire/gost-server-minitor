@@ -27,7 +27,6 @@ export class ConfigureService {
   }
 
   async loadConfig() {
-    // TODO 暂时关闭
     this.loadService();
     // 废弃 PluginService auth 接口
     // this.loadUsers();

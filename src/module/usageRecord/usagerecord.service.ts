@@ -74,6 +74,11 @@ export class UsageRecordService {
             .where('usage_record.userId IN (:...ids)', { ids: userIds })
             .getMany();
 
+          this.logger.log(
+            '[pluginService][listenGost]  待更新数据量：',
+            records?.length,
+          );
+
           records = records.map((v) => {
             // MB
             const tempIncrement = Math.round(

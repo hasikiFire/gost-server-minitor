@@ -15,6 +15,7 @@ export interface IEvent {
   service: string;
   type: string;
   stats: IEventStatus;
+  client: string;
 }
 
 export interface IEventsResponseDTO {

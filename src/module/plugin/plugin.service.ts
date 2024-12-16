@@ -44,10 +44,11 @@ export class PluginService {
     // 单位 byte
     const incrementMap: { [k: string]: number } = {};
     data.events.forEach((v) => {
-      // TODO 待优化成根据client来计算
-      // const userID = v.id;
-      const userID = v.service.split('-')[1];
+      const userID = v.client;
       // gost 程序启动后累计
+      if (!userID) {
+        return;
+      }
       const totalByte =
         (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
       const previousTotalByte = this.userTotalBytes[userID] || 0;
@@ -63,8 +64,8 @@ export class PluginService {
       incrementMap[userID] = incrementMap[userID] + increment;
     });
 
-    this.serverService.updateServeWithLock(incrementMap);
     this.usageRecordService.updateRecordsWithLock(incrementMap);
+    // this.serverService.updateServeWithLock(incrementMap);
   }
 
   async auther(data: IAuthUser) {

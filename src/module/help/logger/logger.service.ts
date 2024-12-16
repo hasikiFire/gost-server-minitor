@@ -4,7 +4,7 @@ import logger from './logger';
 
 @Injectable()
 export class MyLoggerService implements LoggerService {
-  log(message: any, context?: string) {
+  log(message: any, context?: any) {
     logger.info(this.formatMessage(message, context));
   }
 
