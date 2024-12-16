@@ -27,14 +27,15 @@ export class ConfigureService {
   }
 
   async loadConfig() {
-    this.loadService();
+    // this.loadService();
     // 废弃 PluginService auth 接口
     // this.loadUsers();
     // 废弃 流量限制通过 PluginService limiter 接口
     // this.loadLimiter();
   }
   /**
-   * 权宜之计，等handler能观测就不用这么干，在新增套餐里去新增 services
+   * TODO
+   * 获取套餐里新增 services，名称为要设置为IP地址
    * @returns
    */
   async loadService() {

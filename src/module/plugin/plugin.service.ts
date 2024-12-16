@@ -117,14 +117,14 @@ export class PluginService {
   }
 
   async limiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
-    this.logger.log('[plugin][limiter] data: ', JSON.stringify(data));
+    // this.logger.log('[plugin][limiter] data: ', JSON.stringify(data));
     const userID = data.client;
     if (!userID) return { in: 0, out: 0 };
 
     const cacheKey = `${CacheKey.LIMITER}-${userID}`;
     const value = await this.cacheManager.get<number>(cacheKey);
     if (value) {
-      this.logger.log('[plugin][limiter] 获取到缓存 ', userID);
+      // this.logger.log('[plugin][limiter] 获取到缓存 ', userID);
       return { in: value, out: value };
     }
 
@@ -134,7 +134,7 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-    this.logger.log('[plugin][limiter]  套餐生效中. id:: ', record.id);
+    this.logger.log('[plugin][limiter]  套餐生效中. userID:: ', userID);
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
         '[plugin][limiter] 找不到套餐/套餐非生效中, userID: ',

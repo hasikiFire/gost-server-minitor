@@ -81,8 +81,8 @@ export class UsageRecordService {
 
           records = records.map((v) => {
             // MB
-            const tempIncrement = Math.round(
-              (incrementMap[v.userId] || 0) / 1024 / 1024,
+            const tempIncrement = Number(
+              ((incrementMap[v.userId] || 0) / 1024 / 1024).toFixed(2),
             );
             const gb = Number((tempIncrement / 1024).toFixed(4));
             // 使用流量到达限制

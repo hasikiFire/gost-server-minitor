@@ -35,7 +35,7 @@ export class UsageRecord {
   @Column('int', {
     name: 'consumed_data_transfer',
     nullable: true,
-    comment: '用户已消耗的流量（以GB为单位）',
+    comment: '用户已消耗的流量（以MB为单位）',
   })
   consumedDataTransfer: number | null;
 
