@@ -32,9 +32,8 @@ export interface ILimiterDTO {
   service: string; // 服务名称，比如 "service-0"
   network: string; // 网络协议，比如 "tcp"
   addr: string; // 地址，主机名和端口号，比如 "example.com:443"
-  client: string; // 客户端类型，比如 "gost"
+  client: string; //   用户ID
   src: string; // 源地址，IP 和端口号，比如 "192.168.1.1:12345"
-  id: string; // 用户ID
 }
 export interface ILimiterRepostDTO {
   in: number;

@@ -19,9 +19,9 @@ export class PluginController {
     return this.pluginService.observerGost(data);
   }
 
-  @Post('auth')
+  @Post('auther')
   async auth(@Body() data: IAuthUser) {
-    return this.pluginService.auth(data);
+    return this.pluginService.auther(data);
   }
 
   @Post('limiter')

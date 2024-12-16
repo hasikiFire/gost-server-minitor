@@ -1,0 +1,34 @@
+services:
+- name: service-0
+  addr: :30002
+  handler:
+    type: http
+    # type: http2 不行
+    auther: auther-0
+    observer: observer-0
+    limiter: limiter-0
+  listener:
+    type: tcp
+    # type: http2 不行
+authers:
+- name: auther-0
+  plugin:
+    type: http
+    addr: http://localhost:30000/plugin/auth
+observers:
+- name: observer-0
+  plugin:
+    type: http
+    addr: http://localhost:30000/plugin/observer
+limiters:
+- name: limiter-0
+  plugin:
+    type: http
+    addr: http://localhost:30000/plugin/limiter
+api:
+  addr: 0.0.0.0:30001
+  pathPrefix: /api
+  accesslog: true
+  auth:
+    username: admin
+    password: adminadmin

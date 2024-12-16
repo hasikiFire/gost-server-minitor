@@ -23,6 +23,7 @@ import { RedisModule } from './module/help/redis/redis.module';
 import { RabbitMQModule } from './module/help/rabbitMQ/rabbitmq.module';
 
 import { ScheduleModule } from '@nestjs/schedule';
+import { StatusInterceptor } from './common/interceptor/statusInterceptor';
 
 @Module({
   imports: [
@@ -86,6 +87,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: StatusInterceptor, // 注册为全局拦截器
     },
   ],
 })

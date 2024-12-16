@@ -13,7 +13,7 @@ const logFormat = format.combine(
 
 const dailyRotateFileTransport = new DailyRotateFile({
   filename: 'logs/%DATE%-results.log',
-  datePattern: 'YYYY-MM-DD',
+  datePattern: 'YYYY-MM-DD HH:mm:ss',
   maxSize: '20m', // 每个日志文件的最大大小
   maxFiles: '14d', // 保留日志文件的时间
   level: 'info',

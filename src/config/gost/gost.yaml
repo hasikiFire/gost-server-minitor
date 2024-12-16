@@ -4,17 +4,17 @@
 services:
 - name: service-30002
   addr: :30002
-  # observer: observer-0 # 服务上的观测器
   handler:
-    type: http2
+    type: http
     auther: auther-0
     limiter: limiter-0
     observer: observer-0 # handler 上的观测器
     metadata:
+      limiter.refreshInterval: 30s
       enableStats: true # 开启统计
       observePeriod: 5s
   listener:
-    type: http2
+    type: tls
   metadata:
     knock: www.google.com
     probeResist: file:/var/www/html/index.html
@@ -38,7 +38,7 @@ authers:
 - name: auther-0
   plugin:
     type: http
-    addr: http://127.0.0.1:30000/plugin/auth
+    addr: http://127.0.0.1:30000/plugin/auther
 
 # 固定值，接口观测
 limiters:

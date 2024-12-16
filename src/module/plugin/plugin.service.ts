@@ -40,6 +40,7 @@ export class PluginService {
    * TODO 待观察，多用户是咋样的，有增量才会走这里吧？
    **/
   async observerGost(data: IEventsResponseDTO) {
+    this.logger.log('[plugin][observerGost] data: ', JSON.stringify(data));
     // 单位 byte
     const incrementMap: { [k: string]: number } = {};
     data.events.forEach((v) => {
@@ -66,8 +67,7 @@ export class PluginService {
     this.usageRecordService.updateRecordsWithLock(incrementMap);
   }
 
-  async auth(data: IAuthUser) {
-    this.logger.log('[plugin][auth]  data: ', data.username);
+  async auther(data: IAuthUser) {
     if (!data) return false;
     const userID = data.username || '';
     if (!userID) {
@@ -79,7 +79,7 @@ export class PluginService {
     const value = await this.cacheManager.get(cacheKey);
 
     if (value) {
-      this.logger.log('[plugin][auth] 获取到缓存 ', userID);
+      // this.logger.log('[plugin][auth] 获取到缓存 ', userID);
       return { ok: true, id: userID };
     }
 
@@ -116,14 +116,14 @@ export class PluginService {
   }
 
   async limiter(data: ILimiterDTO): Promise<ILimiterRepostDTO> {
-    this.logger.log('[plugin][limiter] userID: ', data.id);
-    const userID = data.id;
+    this.logger.log('[plugin][limiter] data: ', JSON.stringify(data));
+    const userID = data.client;
     if (!userID) return { in: 0, out: 0 };
 
     const cacheKey = `${CacheKey.LIMITER}-${userID}`;
     const value = await this.cacheManager.get<number>(cacheKey);
     if (value) {
-      this.logger.log('[plugin][limiter] 获取到缓存 ', cacheKey);
+      this.logger.log('[plugin][limiter] 获取到缓存 ', userID);
       return { in: value, out: value };
     }
 
@@ -133,7 +133,7 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-    this.logger.log('[plugin][limiter]  套餐生效中, record: ', userID);
+    this.logger.log('[plugin][limiter]  套餐生效中. id:: ', record.id);
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
         '[plugin][limiter] 找不到套餐/套餐非生效中, userID: ',
