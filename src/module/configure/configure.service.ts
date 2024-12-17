@@ -41,10 +41,15 @@ export class ConfigureService {
    */
   async loadService() {
     const packageItems = await this.usageRecordService.findValidPackageitem();
-    // console.log('loadService records: ', users);
+
     if (!packageItems?.length) {
-      this.logger.log('[GostService][loadService] no users add');
+      this.logger.log('[configure.service][loadService] no users add');
       return;
+    } else {
+      this.logger.log(
+        '[configure.service][loadService] packageItems id: ',
+        packageItems?.map((v) => v.id),
+      );
     }
     const ip = await systemInfo.getExternalIp();
     packageItems.forEach(async (v, index) => {
@@ -54,21 +59,24 @@ export class ConfigureService {
           addr: `:${this.beginPort + index}`,
           ...DefaultGostConfig,
         };
-        // console.log('params: ', params);
+        console.log('params: ', params);
         const data = await this.requestService.post<IGostReponse>(
           `${this.gostHost}/api/config/services`,
           params,
         );
 
-        // console.log('data: ', data);
+        console.log('data: ', data);
         if (data.msg === 'OK') {
           this.logger.log(
-            '[GostService][loadService] add Service success',
+            '[configure.service][loadService] add Service success',
             params.name,
           );
         }
       } catch (e) {
-        this.logger.error('[GostService][loadService] add Service faild', e);
+        this.logger.error(
+          '[configure.service][loadService] add Service faild',
+          JSON.stringify(e),
+        );
       }
     });
   }
@@ -80,7 +88,7 @@ export class ConfigureService {
   // async loadUsers() {
   //   const users = await this.usageRecordService.findValidUsers();
   //   if (!users?.length) {
-  //     this.logger.log('[GostService][loadLimiter] no users add');
+  //     this.logger.log('[configure.service][loadLimiter] no users add');
   //     return;
   //   }
 
@@ -99,12 +107,12 @@ export class ConfigureService {
 
   //     if (data.msg === 'OK') {
   //       this.logger.log(
-  //         '[GostService][loadUsers] add user success',
+  //         '[configure.service][loadUsers] add user success',
   //         params.name,
   //       );
   //     }
   //   } catch (e) {
-  //     this.logger.error('[GostService][loadUsers] add user faild', e.msg);
+  //     this.logger.error('[configure.service][loadUsers] add user faild', e.msg);
   //   }
   // }
 
@@ -115,7 +123,7 @@ export class ConfigureService {
   async loadLimiter() {
     const packageItems = await this.usageRecordService.findValidPackageitem();
     if (!packageItems?.length) {
-      this.logger.log('[GostService][loadLimiter] no limiter add');
+      this.logger.log('[configure.service][loadLimiter] no limiter add');
       return;
     }
 
@@ -132,12 +140,15 @@ export class ConfigureService {
 
         if (data.msg === 'OK') {
           this.logger.log(
-            '[GostService][loadLimiter] add Limiter success',
+            '[configure.service][loadLimiter] add Limiter success',
             params.name,
           );
         }
       } catch (e) {
-        this.logger.error('[GostService][loadLimiter] add Limiter faild', e);
+        this.logger.error(
+          '[configure.service][loadLimiter] add Limiter faild',
+          e,
+        );
       }
     });
   }

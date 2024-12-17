@@ -106,7 +106,7 @@ export class PluginService {
     });
 
     this.usageRecordService.updateRecordsWithLock(incrementMap);
-    this.serverService.updateServeWithLock(serverIncreMap);
+    this.serverService.updateServerWithLock(serverIncreMap);
   }
 
   async auther(data: IAuthUser) {

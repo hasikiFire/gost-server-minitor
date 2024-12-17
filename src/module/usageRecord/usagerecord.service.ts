@@ -74,13 +74,12 @@ export class UsageRecordService {
 
           this.logger.log(
             '[pluginService][listenGost]  待更新数据量：',
-            records?.length,
+            records.map((v) => v.id),
           );
 
           records = records.map((v) => {
-            // MB
             const tempIncrement = Number(
-              ((incrementMap[v.userId] || 0) / 1024 / 1024).toFixed(2),
+              ((incrementMap[v.userId] || 0) / 1024 / 1024 / 1024).toFixed(4),
             );
             const gb = Number((tempIncrement / 1024).toFixed(4));
             // 使用流量到达限制

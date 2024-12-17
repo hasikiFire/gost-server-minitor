@@ -91,21 +91,35 @@ export class ServerService {
    * @param incrementMap
    *
    */
-  async updateServeWithLock(incrementMap: Record<number, number>) {
+  async updateServerWithLock(incrementMap: Record<number, number>) {
     try {
       await this.foreignServerRepository.manager.transaction(
         async (transactionalEntityManager) => {
           const serverData = await transactionalEntityManager
-            .createQueryBuilder(ForeignServer, 'foreignServer')
+            .createQueryBuilder(ForeignServer, 'foreign_server')
             .setLock('pessimistic_write') // 行级锁
-            .where('foreignServer.ipAddress = :ipAddress', {
+            .where('foreign_server.ip_address = :ipAddress', {
               ipAddress: this.ip4,
             })
             .getOne();
+          console.log(' this.ip4: ', this.ip4);
+
+          this.logger.log(
+            '[pluginService][updateServerWithLock]  待更新数据量：',
+            incrementMap,
+          );
+          this.logger.log(
+            '[pluginService][updateServerWithLock]  服务区数据：',
+            JSON.stringify(serverData),
+          );
+
           if (!serverData) {
-            this.logger.warn('[pluginService][listenGost]  no server data!!');
+            this.logger.error(
+              '[pluginService][updateServerWithLock]  no server data!!',
+            );
             return;
           }
+
           const allBytes = Object.keys(incrementMap).reduce(
             (pre, cur) => pre + incrementMap[cur],
             0,
@@ -118,12 +132,15 @@ export class ServerService {
 
           await transactionalEntityManager.save(serverData);
           this.logger.log(
-            '[pluginService][listenGost]  update server data success',
+            '[pluginService][updateServerWithLock]  update server data success',
           );
         },
       );
     } catch (e) {
-      this.logger.error('[pluginService][listenGost]  update server faild', e);
+      this.logger.error(
+        '[pluginService][updateServerWithLock]  update server faild',
+        e,
+      );
     }
   }
 }
