@@ -10,7 +10,7 @@ module.exports = {
       autorestart: true,
       exec_mode: 'cluster',
       watch: false,
-      instances: cpuLen,
+      instances: 1,
       max_memory_restart: '1G',
       args: '',
       env: {
