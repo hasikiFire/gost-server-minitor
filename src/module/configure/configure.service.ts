@@ -6,6 +6,7 @@ import { IGostReponse } from 'types/gost';
 import { UsageRecordService } from '../usageRecord/usagerecord.service';
 import { DefaultGostConfig } from 'src/config/gost/gostConfig';
 import { ServerService } from '../server/server.service';
+import systemInfo from 'src/common/os/SystemInfo';
 
 // 对外暴露 gost 方法-编辑套餐
 // 对内初始化 gost 数据
@@ -27,29 +28,29 @@ export class ConfigureService {
   }
 
   async loadConfig() {
-    // this.loadService();
+    this.loadService();
     // 废弃 PluginService auth 接口
     // this.loadUsers();
     // 废弃 流量限制通过 PluginService limiter 接口
     // this.loadLimiter();
   }
   /**
-   * TODO
+   *
    * 获取套餐里新增 services，名称为要设置为IP地址
-   * @returns
+   * @returnsF
    */
   async loadService() {
-    const users = await this.usageRecordService.findValidUsers();
-    // console.log('loadService users: ', users);
-    if (!users?.length) {
+    const packageItems = await this.usageRecordService.findValidPackageitem();
+    // console.log('loadService records: ', users);
+    if (!packageItems?.length) {
       this.logger.log('[GostService][loadService] no users add');
       return;
     }
-
-    users.forEach(async (v, index) => {
+    const ip = await systemInfo.getExternalIp();
+    packageItems.forEach(async (v, index) => {
       try {
         const params = {
-          name: `service-${v.id}`,
+          name: `${ip}-${v.id}`,
           addr: `:${this.beginPort + index}`,
           ...DefaultGostConfig,
         };

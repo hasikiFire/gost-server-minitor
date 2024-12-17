@@ -22,6 +22,7 @@ import { ServerService } from '../server/server.service';
 @Injectable()
 export class PluginService {
   private userTotalBytes: { [k: string]: number } = {};
+  private serverTotalBytes: { [k: string]: number } = {};
   constructor(
     @InjectRepository(UsageRecord)
     private readonly usageRecordRepository: Repository<UsageRecord>,
@@ -39,13 +40,13 @@ export class PluginService {
    * 在 gost.yaml 中设置触发间隔，默认为5分钟
    * TODO 待观察，多用户是咋样的，有增量才会走这里吧？
    **/
-  async observerGost(data: IEventsResponseDTO) {
+  async observeUser(data: IEventsResponseDTO) {
     this.logger.log('[plugin][observerGost] data: ', JSON.stringify(data));
-    // 单位 byte
+    // 单位字节
     const incrementMap: { [k: string]: number } = {};
+    // gost 程序启动后累计
     data.events.forEach((v) => {
       const userID = v.client;
-      // gost 程序启动后累计
       if (!userID) {
         return;
       }
@@ -53,7 +54,6 @@ export class PluginService {
         (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
       const previousTotalByte = this.userTotalBytes[userID] || 0;
       this.userTotalBytes[userID] = totalByte;
-
       // 计算增量
       const increment = totalByte - previousTotalByte;
       if (!increment) return;
@@ -65,7 +65,48 @@ export class PluginService {
     });
 
     this.usageRecordService.updateRecordsWithLock(incrementMap);
-    // this.serverService.updateServeWithLock(incrementMap);
+  }
+  async observerServer(data: IEventsResponseDTO) {
+    this.logger.log('[plugin][observerGost] data: ', JSON.stringify(data));
+    // 单位字节
+    const incrementMap: { [k: string]: number } = {};
+    const serverIncreMap: { [k: string]: number } = {};
+    // gost 程序启动后累计
+    data.events.forEach((v) => {
+      const userID = v.client;
+      if (userID) {
+        const totalByte =
+          (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
+        const previousTotalByte = this.userTotalBytes[userID] || 0;
+        this.userTotalBytes[userID] = totalByte;
+
+        // 计算增量
+        const increment = totalByte - previousTotalByte;
+        if (!increment) return;
+        // 更新 userID 的 totalByte
+        if (!incrementMap[userID]) {
+          incrementMap[userID] = 0;
+        }
+        incrementMap[userID] = incrementMap[userID] + increment;
+      }
+      const ip = v.service.split('-').length > 1 ? v.service.split('-')[0] : '';
+      if (ip) {
+        const totalByte =
+          (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
+        const previousTotalByte = this.serverTotalBytes[ip] || 0;
+        this.serverTotalBytes[ip] = totalByte;
+
+        const increment = totalByte - previousTotalByte;
+        if (!increment) return;
+        if (!serverIncreMap[ip]) {
+          serverIncreMap[ip] = 0;
+        }
+        serverIncreMap[ip] = serverIncreMap[ip] + increment;
+      }
+    });
+
+    this.usageRecordService.updateRecordsWithLock(incrementMap);
+    this.serverService.updateServeWithLock(serverIncreMap);
   }
 
   async auther(data: IAuthUser) {

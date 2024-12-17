@@ -50,10 +50,8 @@ export class UsageRecordService {
     const record = await this.packageItemRepository.find({
       where: { packageStatus: 1, deleted: 0 },
     });
-    if (record.length) {
-      return record.filter((v) => v.speedLimit);
-    }
-    return [];
+
+    return record;
   }
 
   /**

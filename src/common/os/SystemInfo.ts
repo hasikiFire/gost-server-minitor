@@ -1,6 +1,16 @@
+import axios from 'axios';
 import * as systeminformation from 'systeminformation';
 
 class SystemInfo {
+  async getExternalIp(): Promise<string> {
+    try {
+      const response = await axios.get('https://api.ipify.org?format=json');
+      return response.data.ip;
+    } catch (error) {
+      throw new Error('Unable to fetch external IP');
+    }
+  }
+
   async getIPAddresses(): Promise<string[]> {
     try {
       const networkData = await systeminformation.networkInterfaces();

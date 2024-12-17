@@ -14,9 +14,13 @@ import {
 export class PluginController {
   constructor(private readonly pluginService: PluginService) {}
 
-  @Post('observer')
-  async observerGost(@Body() data: IEventsResponseDTO) {
-    return this.pluginService.observerGost(data);
+  @Post('observeUser')
+  async observeUser(@Body() data: IEventsResponseDTO) {
+    return this.pluginService.observeUser(data);
+  }
+  @Post('observerServer')
+  async observerServer(@Body() data: IEventsResponseDTO) {
+    return this.pluginService.observerServer(data);
   }
 
   @Post('auther')

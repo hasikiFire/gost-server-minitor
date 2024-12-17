@@ -8,7 +8,7 @@ import { ForeignServer } from 'src/common/entities/ForeignServer';
 import SystemInfo from 'src/common/os/SystemInfo';
 import { Repository } from 'typeorm';
 import { MyLoggerService } from '../help/logger/logger.service';
-// import { Cron } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class ServerService {
@@ -19,16 +19,14 @@ export class ServerService {
 
     private readonly logger: MyLoggerService,
   ) {
-    // this.initServerStatus();
+    this.initServerStatus();
   }
 
   /**
    * 加载服务器数据到数据库
    */
   async initServerStatus() {
-    // TODO 获取不到外网地址，改成其他方案
-    const ip4s = await SystemInfo.getIPAddresses();
-    this.ip4 = ip4s.length ? ip4s[0] : '';
+    this.ip4 = await SystemInfo.getExternalIp();
     this.logger.log('[serverService] initServerStatus server ip: ', this.ip4);
 
     const serverData = await this.foreignServerRepository.findOne({
@@ -47,10 +45,8 @@ export class ServerService {
     this.logger.log('[serverService] initServerStatus success!!');
   }
 
-  // @Cron('*/1 * * * *')
+  @Cron('*/10 * * * *') // 每 10 分钟执行一次
   async refreshServerStatus() {
-    this.logger.debug('[serverService] Updating server status...');
-
     const serverData = await this.foreignServerRepository.findOne({
       where: {
         ipAddress: this.ip4,

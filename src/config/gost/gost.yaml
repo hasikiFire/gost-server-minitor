@@ -4,11 +4,12 @@
 services:
 - name: service-30002
   addr: :30002
+  observer: observerUser # handler 上的观测器
   handler:
     type: http
     auther: auther-0
     limiter: limiter-0
-    observer: observer-0 # handler 上的观测器
+    observer: observerService # handler 上的观测器
     metadata:
       limiter.refreshInterval: 30s
       enableStats: true # 开启统计
@@ -27,10 +28,15 @@ tls:
 
 # 固定值，接口观测
 observers:
-- name: observer-0
+- name: observerUser
   plugin:
     type: http
-    addr: http://127.0.0.1:30000/plugin/observer
+    addr: http://127.0.0.1:30000/plugin/observerUser
+    timeout: 10s
+- name: observerService
+  plugin:
+    type: http
+    addr: http://127.0.0.1:30000/plugin/observerService
     timeout: 10s
 
 # 固定值，接口观测
