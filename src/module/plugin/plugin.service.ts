@@ -105,7 +105,6 @@ export class PluginService {
       }
     });
 
-    this.usageRecordService.updateRecordsWithLock(incrementMap);
     this.serverService.updateServerWithLock(serverIncreMap);
   }
 

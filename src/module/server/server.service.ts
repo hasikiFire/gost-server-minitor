@@ -109,7 +109,7 @@ export class ServerService {
             incrementMap,
           );
           this.logger.log(
-            '[pluginService][updateServerWithLock]  服务区数据：',
+            '[pluginService][updateServerWithLock]  服务器数据：',
             JSON.stringify(serverData),
           );
 

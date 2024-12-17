@@ -22,8 +22,7 @@ export class ConfigureService {
     private readonly serverService: ServerService,
   ) {
     this.gostHost = this.configService.get<string>('gost.host');
-    this.beginPort = Number(this.configService.get<string>('app.host')) + 2; // 前两位给 gost api 用
-
+    this.beginPort = Number(this.configService.get<string>('app.port')) + 2; // 前两位给 gost api 用
     this.loadConfig();
   }
 
@@ -37,7 +36,7 @@ export class ConfigureService {
   /**
    *
    * 获取套餐里新增 services，名称为要设置为IP地址
-   * @returnsF
+   * @returns
    */
   async loadService() {
     const packageItems = await this.usageRecordService.findValidPackageitem();
@@ -52,33 +51,40 @@ export class ConfigureService {
       );
     }
     const ip = await systemInfo.getExternalIp();
-    packageItems.forEach(async (v, index) => {
-      try {
+    try {
+      packageItems.forEach(async (v, index) => {
+        const addr = `${this.beginPort + index}`;
         const params = {
           name: `${ip}-${v.id}`,
-          addr: `:${this.beginPort + index}`,
+          addr,
           ...DefaultGostConfig,
         };
-        console.log('params: ', params);
+        this.logger.log(
+          '[configure.service][loadService] update gost params',
+          params,
+        );
         const data = await this.requestService.post<IGostReponse>(
           `${this.gostHost}/api/config/services`,
           params,
         );
 
-        console.log('data: ', data);
+        this.logger.log(
+          '[configure.service][loadService] update gost data',
+          data,
+        );
         if (data.msg === 'OK') {
           this.logger.log(
             '[configure.service][loadService] add Service success',
             params.name,
           );
         }
-      } catch (e) {
-        this.logger.error(
-          '[configure.service][loadService] add Service faild',
-          JSON.stringify(e),
-        );
-      }
-    });
+      });
+    } catch (e) {
+      this.logger.error(
+        '[configure.service][loadService] add Service faild',
+        JSON.stringify(e),
+      );
+    }
   }
 
   /**

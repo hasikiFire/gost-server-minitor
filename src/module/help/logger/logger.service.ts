@@ -25,8 +25,16 @@ export class MyLoggerService implements LoggerService {
   }
 
   private formatMessage(message: any, ...context: any[]): string {
-    // 如果 context 中有多个参数，逐个转为字符串并拼接
-    const contextStr = context.map((item) => JSON.stringify(item)).join(' ');
+    // 处理 context 中的每个项，如果是数组则展平
+    const contextStr = context
+      .map((item) => {
+        if (Array.isArray(item)) {
+          return item.join(', ');
+        }
+        return JSON.stringify(item);
+      })
+      .join(' ');
+
     return contextStr ? `${message}: ${contextStr}` : message;
   }
 }
