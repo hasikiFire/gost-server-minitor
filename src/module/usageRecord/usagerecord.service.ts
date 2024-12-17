@@ -71,9 +71,12 @@ export class UsageRecordService {
             .setLock('pessimistic_write') // 行级锁
             .where('usage_record.userId IN (:...ids)', { ids: userIds })
             .getMany();
-
           this.logger.log(
-            '[pluginService][listenGost]  待更新数据量：',
+            '[pluginService][updateServerWithLock] 待更新数据量：',
+            incrementMap,
+          );
+          this.logger.log(
+            '[pluginService][listenGost] 使用记录ID：',
             records.map((v) => v.id),
           );
 
@@ -102,6 +105,7 @@ export class UsageRecordService {
             v.consumedDataTransfer = Number(
               (v.consumedDataTransfer + tempIncrement).toFixed(4),
             );
+
             return v;
           });
 

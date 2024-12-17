@@ -102,20 +102,19 @@ export class ServerService {
               ipAddress: this.ip4,
             })
             .getOne();
-          console.log(' this.ip4: ', this.ip4);
 
           this.logger.log(
-            '[pluginService][updateServerWithLock]  待更新数据量：',
+            '[pluginService][updateServerWithLock] 待更新数据量：',
             incrementMap,
           );
           this.logger.log(
-            '[pluginService][updateServerWithLock]  服务器数据：',
+            '[pluginService][updateServerWithLock] 服务器数据：',
             serverData,
           );
 
           if (!serverData) {
             this.logger.error(
-              '[pluginService][updateServerWithLock]  no server data!!',
+              '[pluginService][updateServerWithLock] no server data!!',
             );
             return;
           }
@@ -127,6 +126,12 @@ export class ServerService {
           const gb = Number((allBytes / 1024 / 1024 / 1024).toFixed(4));
           serverData.consumedDataTransfer = Number(
             (serverData.consumedDataTransfer + gb).toFixed(4),
+          );
+          this.logger.log(
+            '[pluginService][updateServerWithLock] 服务器数据：gb: ',
+            gb,
+            ' allBytes: ',
+            allBytes,
           );
           if (gb >= serverData.consumedStorageGb) {
             serverData.status = 2;

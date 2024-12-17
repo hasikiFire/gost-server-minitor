@@ -51,8 +51,8 @@ export class ConfigureService {
       );
     }
     const ip = await systemInfo.getExternalIp();
-    try {
-      packageItems.forEach(async (v, index) => {
+    packageItems.forEach(async (v, index) => {
+      try {
         const addr = `${this.beginPort + index}`;
         const params = {
           name: `${ip}-${v.id}`,
@@ -78,13 +78,13 @@ export class ConfigureService {
             params.name,
           );
         }
-      });
-    } catch (e) {
-      this.logger.error(
-        '[configure.service][loadService] add Service faild',
-        JSON.stringify(e),
-      );
-    }
+      } catch (e) {
+        this.logger.error(
+          '[configure.service][loadService] add Service faild',
+          JSON.stringify(e),
+        );
+      }
+    });
   }
 
   /**
