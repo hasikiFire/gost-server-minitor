@@ -41,7 +41,7 @@ export class PluginService {
    * TODO 待观察，多用户是咋样的，有增量才会走这里吧？
    **/
   async observeUser(data: IEventsResponseDTO) {
-    this.logger.log('[plugin][observerGost] data: ', JSON.stringify(data));
+    this.logger.log('[plugin][observeUser] data: ', JSON.stringify(data));
     // 单位字节
     const incrementMap: { [k: string]: number } = {};
     // gost 程序启动后累计
@@ -66,8 +66,8 @@ export class PluginService {
 
     this.usageRecordService.updateRecordsWithLock(incrementMap);
   }
-  async observerServer(data: IEventsResponseDTO) {
-    this.logger.log('[plugin][observerGost] data: ', JSON.stringify(data));
+  async observeService(data: IEventsResponseDTO) {
+    this.logger.log('[plugin][observeService] data: ', JSON.stringify(data));
     // 单位字节
     const incrementMap: { [k: string]: number } = {};
     const serverIncreMap: { [k: string]: number } = {};

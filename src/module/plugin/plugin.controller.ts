@@ -18,9 +18,9 @@ export class PluginController {
   async observeUser(@Body() data: IEventsResponseDTO) {
     return this.pluginService.observeUser(data);
   }
-  @Post('observerServer')
-  async observerServer(@Body() data: IEventsResponseDTO) {
-    return this.pluginService.observerServer(data);
+  @Post('observeService')
+  async observeService(@Body() data: IEventsResponseDTO) {
+    return this.pluginService.observeService(data);
   }
 
   @Post('auther')

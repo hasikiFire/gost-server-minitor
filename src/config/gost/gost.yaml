@@ -1,15 +1,13 @@
-# 动态配置，每个套餐都起一个  service!!z
-# 动态配置，每个用户都起一个  service(暂时)
-# 通过 service 区分不同用户
+# 动态配置，每个套餐都起一个  service!!
 services:
 - name: service-30002
   addr: :30002
-  observer: observerUser # handler 上的观测器
+  observer: observeService # handler 上的观测器
   handler:
     type: http
     auther: auther-0
     limiter: limiter-0
-    observer: observerService # handler 上的观测器
+    observer: observeUser # handler 上的观测器
     metadata:
       limiter.refreshInterval: 30s
       enableStats: true # 开启统计
@@ -28,15 +26,15 @@ tls:
 
 # 固定值，接口观测
 observers:
-- name: observerUser
+- name: observeUser
   plugin:
     type: http
-    addr: http://127.0.0.1:30000/plugin/observerUser
+    addr: http://127.0.0.1:30000/plugin/observeUser
     timeout: 10s
-- name: observerService
+- name: observeService
   plugin:
     type: http
-    addr: http://127.0.0.1:30000/plugin/observerService
+    addr: http://127.0.0.1:30000/plugin/observeService
     timeout: 10s
 
 # 固定值，接口观测
