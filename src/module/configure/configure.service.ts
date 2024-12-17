@@ -53,10 +53,9 @@ export class ConfigureService {
     const ip = await systemInfo.getExternalIp();
     packageItems.forEach(async (v, index) => {
       try {
-        const addr = `${this.beginPort + index}`;
         const params = {
           name: `${ip}-${v.id}`,
-          addr,
+          addr: `:${this.beginPort + index}`,
           ...DefaultGostConfig,
         };
         this.logger.log(
