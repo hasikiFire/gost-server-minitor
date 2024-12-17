@@ -30,7 +30,7 @@ export class MyLoggerService implements LoggerService {
       .map((item) => {
         return JSON.stringify(item);
       })
-      .join(' ');
+      .join(';');
 
     return contextStr ? `${message}: ${contextStr}` : message;
   }

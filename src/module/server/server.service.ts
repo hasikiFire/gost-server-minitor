@@ -130,7 +130,7 @@ export class ServerService {
           this.logger.log(
             '[pluginService][updateServerWithLock] 服务器数据：gb: ',
             gb,
-            ' allBytes: ',
+            'allBytes: ',
             allBytes,
           );
           if (gb >= serverData.consumedStorageGb) {
@@ -140,6 +140,7 @@ export class ServerService {
           await transactionalEntityManager.save(serverData);
           this.logger.log(
             '[pluginService][updateServerWithLock]  update server data success',
+            serverData,
           );
         },
       );

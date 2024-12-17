@@ -72,7 +72,7 @@ export class UsageRecordService {
             .where('usage_record.userId IN (:...ids)', { ids: userIds })
             .getMany();
           this.logger.log(
-            '[pluginService][updateServerWithLock] 待更新数据量：',
+            '[pluginService][updateRecordsWithLock] 待更新数据量：',
             incrementMap,
           );
           this.logger.log(
@@ -108,7 +108,7 @@ export class UsageRecordService {
 
             return v;
           });
-
+          this.logger.log('[pluginService][listenGost] 使用记录ID：', records);
           await transactionalEntityManager.save(records);
           this.logger.log(
             '[pluginService][listenGost]  update records success',
