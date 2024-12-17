@@ -81,9 +81,8 @@ export class UsageRecordService {
             const tempIncrement = Number(
               ((incrementMap[v.userId] || 0) / 1024 / 1024 / 1024).toFixed(4),
             );
-            const gb = Number((tempIncrement / 1024).toFixed(4));
             // 使用流量到达限制
-            if (gb >= v.dataAllowance) {
+            if (tempIncrement >= v.dataAllowance) {
               v.purchaseStatus = 2;
 
               // 删除本系统缓存，瞬间禁用
@@ -100,7 +99,9 @@ export class UsageRecordService {
                 },
               });
             }
-            v.consumedDataTransfer += tempIncrement;
+            v.consumedDataTransfer = Number(
+              (v.consumedDataTransfer + tempIncrement).toFixed(4),
+            );
             return v;
           });
 

@@ -5,32 +5,29 @@ import logger from './logger';
 @Injectable()
 export class MyLoggerService implements LoggerService {
   log(message: any, ...context: any[]) {
-    logger.info(this.formatMessage(message, context));
+    logger.info(this.formatMessage(message, ...context));
   }
 
   error(message: any, ...context: any[]) {
-    logger.error(this.formatMessage(message, context));
+    logger.error(this.formatMessage(message, ...context));
   }
 
   warn(message: any, ...context: any[]) {
-    logger.warn(this.formatMessage(message, context));
+    logger.warn(this.formatMessage(message, ...context));
   }
 
   debug(message: any, ...context: any[]) {
-    logger.debug(this.formatMessage(message, context));
+    logger.debug(this.formatMessage(message, ...context));
   }
 
   verbose(message: any, ...context: any[]) {
-    logger.verbose(this.formatMessage(message, context));
+    logger.verbose(this.formatMessage(message, ...context));
   }
 
   private formatMessage(message: any, ...context: any[]): string {
     // 处理 context 中的每个项，如果是数组则展平
     const contextStr = context
       .map((item) => {
-        if (Array.isArray(item)) {
-          return item.join(', ');
-        }
         return JSON.stringify(item);
       })
       .join(' ');

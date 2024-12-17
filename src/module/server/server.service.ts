@@ -110,7 +110,7 @@ export class ServerService {
           );
           this.logger.log(
             '[pluginService][updateServerWithLock]  服务器数据：',
-            JSON.stringify(serverData),
+            serverData,
           );
 
           if (!serverData) {
@@ -125,7 +125,9 @@ export class ServerService {
             0,
           );
           const gb = Number((allBytes / 1024 / 1024 / 1024).toFixed(4));
-          serverData.consumedDataTransfer += gb;
+          serverData.consumedDataTransfer = Number(
+            (serverData.consumedDataTransfer + gb).toFixed(4),
+          );
           if (gb >= serverData.consumedStorageGb) {
             serverData.status = 2;
           }
