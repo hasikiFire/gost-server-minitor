@@ -25,7 +25,7 @@ export class PackageItem {
     name: 'original_price',
     comment: '商品原价',
     precision: 10,
-    scale: 6,
+    scale: 2,
   })
   originalPrice: string;
 
@@ -40,8 +40,8 @@ export class PackageItem {
     name: 'sale_price',
     comment: '商品销售价',
     precision: 10,
-    scale: 6,
-    default: () => "'0.000000'",
+    scale: 2,
+    default: () => "'0.00'",
   })
   salePrice: string;
 
@@ -68,20 +68,22 @@ export class PackageItem {
   })
   discountEndDate: Date | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'data_allowance',
     comment: '数据流量限额（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  dataAllowance: number;
+  dataAllowance: string;
 
-  @Column('int', {
+  @Column('tinyint', {
     name: 'device_limit',
     nullable: true,
     comment: '设备数量限制',
   })
   deviceLimit: number | null;
 
-  @Column('int', {
+  @Column('smallint', {
     name: 'speed_limit',
     nullable: true,
     comment: '速率限制（单位：Mbps）',

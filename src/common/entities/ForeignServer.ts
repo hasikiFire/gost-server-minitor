@@ -39,6 +39,13 @@ export class ForeignServer {
   })
   ipAddress: string;
 
+  @Column('smallint', {
+    name: 'port',
+    nullable: true,
+    comment: '服务器的端口号(会变动)',
+  })
+  port: number | null;
+
   @Column('timestamp', { name: 'start_date', comment: '服务器启动日期' })
   startDate: Date;
 
@@ -46,21 +53,25 @@ export class ForeignServer {
     name: 'monthly_fee',
     comment: '每月费用，单位（美元）',
     precision: 10,
-    scale: 6,
+    scale: 2,
   })
   monthlyFee: string;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'total_monthly_data_transfer',
-    comment: '服务器每月的总流量（以GB为单位）',
+    comment: '服务器每月默认总流量（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  totalMonthlyDataTransfer: number;
+  totalMonthlyDataTransfer: string;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'consumed_data_transfer',
-    comment: '用户已消耗的流量（以MB为单位）',
+    comment: '服务器已消耗的流量（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  consumedDataTransfer: number;
+  consumedDataTransfer: string;
 
   @Column('varchar', {
     name: 'operating_system',
@@ -70,54 +81,71 @@ export class ForeignServer {
   })
   operatingSystem: string | null;
 
-  @Column('int', {
+  @Column('tinyint', {
     name: 'cpu_cores',
     nullable: true,
     comment: '服务器的CPU核心数',
   })
   cpuCores: number | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'ram_gb',
     nullable: true,
-    comment: '服务器的总RAM大小（以GB为单位）',
+    comment: '服务器的总RAM大小（单位：GB）',
+    precision: 10,
+    scale: 0,
   })
-  ramGb: number | null;
+  ramGb: string | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'remaining_ram_gb',
     nullable: true,
-    comment: '服务器剩余的RAM大小（以GB为单位）',
+    comment: '服务器剩余的RAM大小（单位：GB）',
+    precision: 10,
+    scale: 0,
   })
-  remainingRamGb: number | null;
+  remainingRamGb: string | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'storage_gb',
     nullable: true,
-    comment: '服务器的总存储大小（以GB为单位）',
+    comment: '服务器的总存储大小（单位：GB）',
+    precision: 10,
+    scale: 2,
   })
-  storageGb: number | null;
+  storageGb: string | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'consumed_storage_gb',
     nullable: true,
-    comment: '服务器已使用的存储大小（以GB为单位）',
+    comment: '服务器已使用的存储大小（单位：GB）',
+    precision: 10,
+    scale: 2,
   })
-  consumedStorageGb: number | null;
+  consumedStorageGb: string | null;
 
-  @Column('int', {
+  @Column('tinyint', {
     name: 'status',
     comment: '服务器的状态。0: 停止 1：活动，2：过期',
+    width: 1,
   })
-  status: number;
+  status: boolean;
+
+  @Column('tinyint', {
+    name: 'is_beyond_transfer',
+    nullable: true,
+    comment: '是否超过默认流量包限额(1：是，0：否)',
+  })
+  isBeyondTransfer: number | null;
 
   @Column('tinyint', {
     name: 'deleted',
     nullable: true,
     comment: '是否已删除 1：已删除 0：未删除',
+    width: 1,
     default: () => "'0'",
   })
-  deleted: number | null;
+  deleted: boolean | null;
 
   @Column('timestamp', {
     name: 'created_at',

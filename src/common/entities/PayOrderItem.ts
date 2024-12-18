@@ -38,7 +38,7 @@ export class PayOrderItem {
     name: 'original_price',
     comment: '商品原价',
     precision: 10,
-    scale: 6,
+    scale: 2,
   })
   originalPrice: string;
 
@@ -46,8 +46,8 @@ export class PayOrderItem {
     name: 'sale_price',
     comment: '商品销售价',
     precision: 10,
-    scale: 6,
-    default: () => "'0.000000'",
+    scale: 2,
+    default: () => "'0.00'",
   })
   salePrice: string;
 
@@ -74,11 +74,13 @@ export class PayOrderItem {
   })
   discountEndDate: Date | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'data_allowance',
     comment: '数据流量限额（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  dataAllowance: number;
+  dataAllowance: string;
 
   @Column('int', {
     name: 'device_limit',

@@ -133,8 +133,9 @@ export class ServerService {
             'allBytes: ',
             allBytes,
           );
-          if (gb >= serverData.consumedStorageGb) {
-            serverData.status = 2;
+          // 其实不用，一般超出的话多付流量费就行
+          if (gb >= serverData.totalMonthlyDataTransfer) {
+            serverData.isBeyondTransfer = 1;
           }
 
           await transactionalEntityManager.save(serverData);

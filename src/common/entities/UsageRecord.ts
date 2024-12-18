@@ -19,7 +19,7 @@ export class UsageRecord {
   @Column('bigint', { name: 'user_id', comment: '用户ID' })
   userId: string;
 
-  @Column('int', {
+  @Column('tinyint', {
     name: 'purchase_status',
     comment: '套餐状态 0:未开始 1：生效中 2：流量已用尽 3：已过期 ',
     default: () => "'0'",
@@ -32,25 +32,31 @@ export class UsageRecord {
   @Column('timestamp', { name: 'purchase_end_time', comment: '结束日期' })
   purchaseEndTime: Date;
 
-  @Column('int', {
+  @Column('decimal', {
+    name: 'data_allowance',
+    comment: '数据流量限额（单位：GB）',
+    precision: 12,
+    scale: 4,
+  })
+  dataAllowance: string;
+
+  @Column('decimal', {
     name: 'consumed_data_transfer',
     nullable: true,
-    comment: '用户已消耗的流量（以MB为单位）',
+    comment: '用户已消耗的流量（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  consumedDataTransfer: number | null;
+  consumedDataTransfer: string | null;
 
-  @Column('int', {
+  @Column('decimal', {
     name: 'speed_limit',
     nullable: true,
     comment: '数据流量限额（单位：GB）',
+    precision: 12,
+    scale: 4,
   })
-  speedLimit: number;
-
-  @Column('int', {
-    name: 'data_allowance',
-    comment: '数据流量限额（单位：GB）',
-  })
-  dataAllowance: number;
+  speedLimit: string | null;
 
   @Column('int', {
     name: 'device_num',
