@@ -129,7 +129,7 @@ export class ForeignServer {
     comment: '服务器的状态。0: 停止 1：活动，2：过期',
     width: 1,
   })
-  status: boolean;
+  status: number;
 
   @Column('tinyint', {
     name: 'is_beyond_transfer',

@@ -183,7 +183,7 @@ export class PluginService {
       return { in: 0, out: 0 };
     }
     const limitNum = record.speedLimit
-      ? record.speedLimit * 1024 * 1024
+      ? Number(record.speedLimit) * 1024 * 1024
       : 99999 * 1024 * 1024; // 无限制
 
     // 缓存6h

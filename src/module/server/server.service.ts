@@ -82,8 +82,8 @@ export class ServerService {
   }
 
   byteToGb(bytes: number) {
-    if (!bytes) return 0;
-    return Number((bytes / 1024 / 1024 / 1024).toFixed(2));
+    if (!bytes) return '0';
+    return (bytes / 1024 / 1024 / 1024).toFixed(2);
   }
 
   /**
@@ -124,9 +124,10 @@ export class ServerService {
             0,
           );
           const gb = Number((allBytes / 1024 / 1024 / 1024).toFixed(4));
-          serverData.consumedDataTransfer = Number(
-            (serverData.consumedDataTransfer + gb).toFixed(4),
-          );
+          serverData.consumedDataTransfer = (
+            Number(serverData.consumedDataTransfer) + gb
+          ).toFixed(4);
+
           this.logger.log(
             '[pluginService][updateServerWithLock] 服务器数据：gb: ',
             gb,
@@ -134,7 +135,7 @@ export class ServerService {
             allBytes,
           );
           // 其实不用，一般超出的话多付流量费就行
-          if (gb >= serverData.totalMonthlyDataTransfer) {
+          if (gb >= Number(serverData.totalMonthlyDataTransfer)) {
             serverData.isBeyondTransfer = 1;
           }
 
