@@ -9,6 +9,7 @@ import SystemInfo from 'src/common/os/SystemInfo';
 import { Repository } from 'typeorm';
 import { MyLoggerService } from '../help/logger/logger.service';
 import { Cron } from '@nestjs/schedule';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class ServerService {
@@ -91,7 +92,7 @@ export class ServerService {
    * @param incrementMap
    *
    */
-  async updateServerWithLock(incrementMap: Record<number, number>) {
+  async updateServerWithLock(incrementMap: Record<number, Decimal>) {
     try {
       await this.foreignServerRepository.manager.transaction(
         async (transactionalEntityManager) => {
@@ -119,16 +120,22 @@ export class ServerService {
             return;
           }
 
+          // 使用 Decimal 进行高精度计算
           const allBytes = Object.keys(incrementMap).reduce(
-            (pre, cur) => pre + incrementMap[cur],
-            0,
+            (pre, cur) => new Decimal(pre).plus(incrementMap[cur]),
+            new Decimal(0),
           );
-          const gb = Number((allBytes / 1024 / 1024 / 1024).toFixed(4));
-          serverData.consumedDataTransfer = (
-            Number(serverData.consumedDataTransfer) + gb
-          ).toFixed(4);
 
-          if (gb >= Number(serverData.totalMonthlyDataTransfer)) {
+          serverData.consumedDataTransfer = new Decimal(
+            serverData.consumedDataTransfer,
+          )
+            .add(allBytes)
+            .toString();
+          if (
+            new Decimal(serverData.consumedDataTransfer).greaterThanOrEqualTo(
+              new Decimal(serverData.totalMonthlyDataTransfer),
+            )
+          ) {
             // 更新状态服务器监控用到
             serverData.isBeyondTransfer = 1;
           }

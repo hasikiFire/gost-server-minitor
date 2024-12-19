@@ -15,14 +15,15 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CacheKey } from 'src/common/constanst/constanst';
 import { UsageRecordService } from '../usageRecord/usagerecord.service';
 import { ServerService } from '../server/server.service';
+import Decimal from 'decimal.js';
 
 /**
  * 本模块逻辑主要给 gost 流量经过判断用，逻辑应该简单并且使用缓存，不要设置太多日志
  */
 @Injectable()
 export class PluginService {
-  private userTotalBytes: { [k: string]: number } = {};
-  private serverTotalBytes: { [k: string]: number } = {};
+  private userTotalBytes: { [k: string]: Decimal } = {};
+  private serverTotalBytes: { [k: string]: Decimal } = {};
   constructor(
     @InjectRepository(UsageRecord)
     private readonly usageRecordRepository: Repository<UsageRecord>,
@@ -43,65 +44,76 @@ export class PluginService {
   async observeUser(data: IEventsResponseDTO) {
     this.logger.log('[plugin][observeUser] data: ', JSON.stringify(data));
     // 单位字节
-    const incrementMap: { [k: string]: number } = {};
+    const incrementMap: { [k: string]: Decimal } = {};
     // gost 程序启动后累计
     data.events.forEach((v) => {
       const userID = v.client;
       if (!userID) {
         return;
       }
-      const totalByte =
-        (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
-      const previousTotalByte = this.userTotalBytes[userID] || 0;
+
+      const totalByte = new Decimal(v.stats?.inputBytes ?? 0).plus(
+        v.stats?.outputBytes ?? 0,
+      );
+      const previousTotalByte = new Decimal(this.userTotalBytes[userID] || 0);
       this.userTotalBytes[userID] = totalByte;
-      // 计算增量
-      const increment = totalByte - previousTotalByte;
-      if (!increment) return;
-      // 更新 userID 的 totalByte
+      const increment = totalByte.minus(previousTotalByte);
+      if (increment.isZero()) return;
+
+      // 更新增量映射表
       if (!incrementMap[userID]) {
-        incrementMap[userID] = 0;
+        incrementMap[userID] = new Decimal(0);
       }
-      incrementMap[userID] = incrementMap[userID] + increment;
+      incrementMap[userID] = incrementMap[userID].plus(increment);
     });
 
     this.usageRecordService.updateRecordsWithLock(incrementMap);
   }
+
   async observeService(data: IEventsResponseDTO) {
     this.logger.log('[plugin][observeService] data: ', JSON.stringify(data));
     // 单位字节
-    const incrementMap: { [k: string]: number } = {};
-    const serverIncreMap: { [k: string]: number } = {};
+    const incrementMap: { [k: string]: Decimal } = {};
+    const serverIncreMap: { [k: string]: Decimal } = {};
     // gost 程序启动后累计
     data.events.forEach((v) => {
       const userID = v.client;
       if (userID) {
-        const totalByte =
-          (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
-        const previousTotalByte = this.userTotalBytes[userID] || 0;
+        // 计算总字节数
+        const totalByte = new Decimal(v.stats?.inputBytes ?? 0).plus(
+          v.stats?.outputBytes ?? 0,
+        );
+        const previousTotalByte = new Decimal(this.userTotalBytes[userID] || 0);
         this.userTotalBytes[userID] = totalByte;
 
         // 计算增量
-        const increment = totalByte - previousTotalByte;
-        if (!increment) return;
+        const increment = totalByte.minus(previousTotalByte);
+        if (increment.isZero()) return;
+
         // 更新 userID 的 totalByte
         if (!incrementMap[userID]) {
-          incrementMap[userID] = 0;
+          incrementMap[userID] = new Decimal(0);
         }
-        incrementMap[userID] = incrementMap[userID] + increment;
+        incrementMap[userID] = incrementMap[userID].plus(increment);
       }
+
       const ip = v.service.split('-').length > 1 ? v.service.split('-')[0] : '';
       if (ip) {
-        const totalByte =
-          (v.stats?.inputBytes ?? 0) + (v.stats?.outputBytes ?? 0);
-        const previousTotalByte = this.serverTotalBytes[ip] || 0;
+        // 计算总字节数
+        const totalByte = new Decimal(v.stats?.inputBytes ?? 0).plus(
+          v.stats?.outputBytes ?? 0,
+        );
+        const previousTotalByte = new Decimal(this.serverTotalBytes[ip] || 0);
         this.serverTotalBytes[ip] = totalByte;
 
-        const increment = totalByte - previousTotalByte;
-        if (!increment) return;
+        // 计算增量
+        const increment = totalByte.minus(previousTotalByte);
+        if (increment.isZero()) return;
+
         if (!serverIncreMap[ip]) {
-          serverIncreMap[ip] = 0;
+          serverIncreMap[ip] = new Decimal(0);
         }
-        serverIncreMap[ip] = serverIncreMap[ip] + increment;
+        serverIncreMap[ip] = serverIncreMap[ip].plus(increment);
       }
     });
 

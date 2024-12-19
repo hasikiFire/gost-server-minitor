@@ -13,6 +13,7 @@ import { In, Repository } from 'typeorm';
 import { MyLoggerService } from '../help/logger/logger.service';
 import { RabbitMQService } from '../help/rabbitMQ/rabbitmq.service';
 import { Cache } from 'cache-manager';
+import Decimal from 'decimal.js';
 
 @Injectable()
 export class UsageRecordService {
@@ -61,7 +62,7 @@ export class UsageRecordService {
    * 解决方法： 1. 对一个表而言，应尽量以固定的顺序存取表中的行
    * @param incrementMap
    */
-  async updateRecordsWithLock(incrementMap: Record<number, number>) {
+  async updateRecordsWithLock(incrementMap: Record<number, Decimal>) {
     const userIds = Object.keys(incrementMap).sort(); // 固定的顺序存取表中的行，这样只会发生锁的阻塞等待
     try {
       await this.usageRecordRepository.manager.transaction(

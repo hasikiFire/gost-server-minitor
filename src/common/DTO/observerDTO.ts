@@ -3,8 +3,8 @@ export interface IEventStatus {
   msg: string;
   totalConns?: number;
   currentConns?: number;
-  inputBytes?: number;
-  outputBytes?: number;
+  inputBytes?: string;
+  outputBytes?: string;
   totalErrs?: number;
 
   id?: string; // 用户ID
