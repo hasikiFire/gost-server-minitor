@@ -106,7 +106,7 @@ export class UsageRecordService {
 
             return v;
           });
-          this.logger.log('[pluginService][listenGost] 使用记录ID：', records);
+
           await transactionalEntityManager.save(records);
           this.logger.log(
             '[pluginService][listenGost]  update records success',

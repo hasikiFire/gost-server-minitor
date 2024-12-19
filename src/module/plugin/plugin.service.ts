@@ -186,7 +186,7 @@ export class PluginService {
         purchaseStatus: 1,
       },
     });
-    this.logger.log('[plugin][limiter]  套餐生效中. userID:: ', userID);
+    this.logger.log('[plugin][limiter] 套餐生效中. userID: ', userID);
     if (!record || record.purchaseStatus !== 1) {
       this.logger.log(
         '[plugin][limiter] 找不到套餐/套餐非生效中, userID: ',
