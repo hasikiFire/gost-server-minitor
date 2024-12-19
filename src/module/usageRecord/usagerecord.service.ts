@@ -82,11 +82,8 @@ export class UsageRecordService {
           );
 
           records = records.map((v) => {
-            const tempIncrement = Number(
-              ((incrementMap[v.userId] || 0) / 1024 / 1024 / 1024).toFixed(4),
-            );
             // 使用流量到达限制
-            if (tempIncrement >= Number(v.dataAllowance)) {
+            if (incrementMap[v.userId].greaterThanOrEqualTo(v.dataAllowance)) {
               v.purchaseStatus = 2;
 
               // 删除本系统缓存，瞬间禁用
@@ -103,9 +100,9 @@ export class UsageRecordService {
                 },
               });
             }
-            v.consumedDataTransfer = (
-              Number(v.consumedDataTransfer) + tempIncrement
-            ).toFixed(4);
+            v.consumedDataTransfer = new Decimal(v.consumedDataTransfer)
+              .plus(incrementMap[v.userId])
+              .toString();
 
             return v;
           });

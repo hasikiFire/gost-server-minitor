@@ -108,10 +108,6 @@ export class ServerService {
             '[pluginService][updateServerWithLock] 待更新数据量：',
             incrementMap,
           );
-          this.logger.log(
-            '[pluginService][updateServerWithLock] 服务器数据：',
-            serverData,
-          );
 
           if (!serverData) {
             this.logger.error(
@@ -143,7 +139,6 @@ export class ServerService {
           await transactionalEntityManager.save(serverData);
           this.logger.log(
             '[pluginService][updateServerWithLock]  update server data success',
-            serverData,
           );
         },
       );
