@@ -74,13 +74,11 @@ export class PayOrderItem {
   })
   discountEndDate: Date | null;
 
-  @Column('decimal', {
+  @Column('int', {
     name: 'data_allowance',
     comment: '数据流量限额（单位：GB）',
-    precision: 12,
-    scale: 4,
   })
-  dataAllowance: string;
+  dataAllowance: number;
 
   @Column('int', {
     name: 'device_limit',

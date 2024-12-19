@@ -32,29 +32,26 @@ export class UsageRecord {
   @Column('timestamp', { name: 'purchase_end_time', comment: '结束日期' })
   purchaseEndTime: Date;
 
-  @Column('decimal', {
+  @Column('bigint', {
     name: 'data_allowance',
-    comment: '数据流量限额（单位：GB）',
-    precision: 12,
-    scale: 4,
+    comment: '数据流量限额（单位：B）',
+    unsigned: true,
   })
   dataAllowance: string;
 
-  @Column('decimal', {
+  @Column('bigint', {
     name: 'consumed_data_transfer',
     nullable: true,
-    comment: '用户已消耗的流量（单位：GB）',
-    precision: 12,
-    scale: 4,
+    comment: '用户已消耗的流量（单位：B）',
+    unsigned: true,
   })
   consumedDataTransfer: string | null;
 
-  @Column('decimal', {
+  @Column('bigint', {
     name: 'speed_limit',
     nullable: true,
-    comment: '数据流量限额（单位：GB）',
-    precision: 12,
-    scale: 4,
+    comment: '流量速率限额（单位：B）',
+    unsigned: true,
   })
   speedLimit: string | null;
 

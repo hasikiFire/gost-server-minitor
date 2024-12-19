@@ -57,19 +57,17 @@ export class ForeignServer {
   })
   monthlyFee: string;
 
-  @Column('decimal', {
+  @Column('bigint', {
     name: 'total_monthly_data_transfer',
-    comment: '服务器每月默认总流量（单位：GB）',
-    precision: 12,
-    scale: 4,
+    comment: '服务器每月默认总流量（单位：B）',
+    unsigned: true,
   })
   totalMonthlyDataTransfer: string;
 
-  @Column('decimal', {
+  @Column('bigint', {
     name: 'consumed_data_transfer',
-    comment: '服务器已消耗的流量（单位：GB）',
-    precision: 12,
-    scale: 4,
+    comment: '服务器已消耗的流量（单位：B）',
+    unsigned: true,
   })
   consumedDataTransfer: string;
 

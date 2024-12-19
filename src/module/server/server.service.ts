@@ -128,14 +128,8 @@ export class ServerService {
             Number(serverData.consumedDataTransfer) + gb
           ).toFixed(4);
 
-          this.logger.log(
-            '[pluginService][updateServerWithLock] 服务器数据：gb: ',
-            gb,
-            'allBytes: ',
-            allBytes,
-          );
-          // 其实不用，一般超出的话多付流量费就行
           if (gb >= Number(serverData.totalMonthlyDataTransfer)) {
+            // 更新状态服务器监控用到
             serverData.isBeyondTransfer = 1;
           }
 
